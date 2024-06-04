@@ -33,6 +33,40 @@ var (
 	dbInstance *service
 )
 
+func CreateTables(db *sql.DB) {
+	createUsersStatement, err := db.Prepare(`
+		CREATE TABLE IF NOT EXISTS users (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			username TEXT UNIQUE NOT NULL,
+			password_hash TEXT NOT NULL,
+			email TEXT UNIQUE NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	)`)
+
+	if err != nil {
+		fmt.Println("create users table error: ", err)
+	}
+
+	createUsersStatement.Exec()
+
+	createSessionsStatement, err := db.Prepare(`
+		CREATE TABLE IF NOT EXISTS sessions (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id INTEGER NOT NULL,
+			session_token TEXT UNIQUE NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			expires_at DATETIME NOT NULL,
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+	)`)
+
+	if err != nil {
+		fmt.Println("create sessions table error: ", err)
+	}
+
+	createSessionsStatement.Exec()
+}
+
 func New() Service {
 	// Reuse Connection
 	if dbInstance != nil {
@@ -49,6 +83,8 @@ func New() Service {
 	dbInstance = &service{
 		db: db,
 	}
+
+	CreateTables(db)
 	return dbInstance
 }
 
