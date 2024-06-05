@@ -12,7 +12,7 @@ templ SignupPage() {
 			<main>
         <h1>Signup</h1>
         <div id="form-response">
-            asdasd
+          <!-- Form response will be rendered here -->
         </div>
         <form hx-post="/signup_post" method="POST" hx-target="#form-response">
           <fieldset>
@@ -33,8 +33,17 @@ templ SignupPage() {
 	</html>
 }
 
-templ SignupResponse(email string, password string) {
-	<div>
-    We received your signup request with email: { email } and password: { password }
-  </div>
+templ SignupErrorResponseWithMessage(message string, isError bool) {
+  if isError {
+    <p class="message error">{ message }</p>
+  }
+  else {
+    <p class="message success">{ message }</p>
+  }
+}
+
+templ SignupErrorResponse() {
+  <p>
+    There was an error with your signup request
+  </p>
 }

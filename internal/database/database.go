@@ -11,6 +11,7 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Service represents a service that interacts with a database.
@@ -22,6 +23,9 @@ type Service interface {
 	// Close terminates the database connection.
 	// It returns an error if the connection cannot be closed.
 	Close() error
+
+	GetUserByEmail(email string) (*User, error)
+	AddUser(email, password string) error
 }
 
 type service struct {
@@ -146,4 +150,46 @@ func (s *service) Health() map[string]string {
 func (s *service) Close() error {
 	log.Printf("Disconnected from database: %s", dburl)
 	return s.db.Close()
+}
+
+type User struct {
+	id            int
+	username      string
+	password_hash string
+	email         string
+	created_at    string
+	updated_at    string
+}
+
+func (s *service) GetUserByEmail(email string) (*User, error) {
+	var user User
+
+	query := `SELECT id, username, password_hash, email, created_at, updated_at FROM users WHERE email = ?`
+	row := s.db.QueryRow(query, email)
+	err := row.Scan(&user.id, &user.username, &user.password_hash, &user.email, &user.created_at, &user.updated_at)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil // No user found with the given email
+		}
+		return nil, fmt.Errorf("error querying user by email: %w", err)
+	}
+
+	return &user, nil
+}
+
+func (s *service) AddUser(email, password string) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	if err != nil {
+		return err
+	}
+
+	query := `INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)`
+	_, err = s.db.Exec(query, email, email, hashedPassword)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
