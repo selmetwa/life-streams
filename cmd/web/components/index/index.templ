@@ -1,8 +1,8 @@
 package web
 import "life-streams/cmd/web"
 
-templ IndexPage() {
-  @web.Base() {
+templ IndexPage(isLoggedIn bool) {
+  @web.Base(isLoggedIn) {
     <h1>Home Page</h1>
     <p>Please log in</p>
   }

@@ -1,6 +1,6 @@
 package web
 
-templ Base() {
+templ Base(isLoggedIn bool) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -9,11 +9,17 @@ templ Base() {
 			<script src="assets/js/htmx.min.js"></script>
 		</head>
 		<body>
-      <header>
-      <form action="/logout" method="POST">
-        <button type="submit">Logout</button>
-      </form>
-      </header>
+			<header>
+				if isLoggedIn {
+					<a href="/dashboard">dashboard</a>
+					<form action="/logout" method="POST">
+						<button type="submit">Logout</button>
+					</form>
+				} else {
+					<a href="/login">Login</a>
+					<a href="/signup">sign up</a>
+				}
+			</header>
 			<main>
 				{ children... }
 			</main>

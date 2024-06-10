@@ -77,14 +77,14 @@ func (s *Server) RegisterRoutes() http.Handler {
 	fileServer := http.FileServer(http.FS(web.Files))
 	mux.Handle("/assets/", fileServer)
 
-	mux.Handle("/dashboard", authGatedMiddleware(templ.Handler(dashboard.Dashboard())))
+	mux.Handle("/dashboard", authGatedMiddleware(templ.Handler(dashboard.Dashboard(true))))
 
-	mux.Handle("/", alreadyLoggedInMiddleware(templ.Handler(index.IndexPage())))
+	mux.Handle("/", alreadyLoggedInMiddleware(templ.Handler(index.IndexPage(false))))
 
-	mux.Handle("/signup", alreadyLoggedInMiddleware(templ.Handler(signup_view.SignupPage())))
+	mux.Handle("/signup", alreadyLoggedInMiddleware(templ.Handler(signup_view.SignupPage(false))))
 	mux.HandleFunc("/signup_post", signup_handler.SignupHandler)
 
-	mux.Handle("/login", alreadyLoggedInMiddleware(templ.Handler(login_view.LoginPage())))
+	mux.Handle("/login", alreadyLoggedInMiddleware(templ.Handler(login_view.LoginPage(false))))
 	mux.HandleFunc("/login_post", login_handler.LoginHandler)
 
 	mux.HandleFunc("/logout", logout_handler.LogoutHandler)

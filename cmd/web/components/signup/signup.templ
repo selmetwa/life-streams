@@ -2,8 +2,8 @@ package web
 
 import "life-streams/cmd/web"
 
-templ SignupPage() {
-	@web.Base() {
+templ SignupPage(isLoggedIn bool) {
+	@web.Base(isLoggedIn) {
 		<h1>Signup</h1>
 		<div id="form-response">
 			<!-- Form response will be rendered here -->
