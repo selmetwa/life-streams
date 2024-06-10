@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/google/uuid"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
@@ -26,6 +27,9 @@ type Service interface {
 
 	GetUserByEmail(email string) (*User, error)
 	AddUser(email, password string) error
+	LoginUser(email, password string) (*User, string, error)
+	LogoutUser(sessionToken string) error
+	GetSession(name string) (*Session, error)
 }
 
 type service struct {
@@ -172,7 +176,7 @@ func (s *service) GetUserByEmail(email string) (*User, error) {
 		if err == sql.ErrNoRows {
 			return nil, nil // No user found with the given email
 		}
-		return nil, fmt.Errorf("error querying user by email: %w", err)
+		return nil, fmt.Errorf("error querying user by email")
 	}
 
 	return &user, nil
@@ -192,4 +196,65 @@ func (s *service) AddUser(email, password string) error {
 	}
 
 	return nil
+}
+
+func (s *service) LoginUser(email, password string) (*User, string, error) {
+	user, err := s.GetUserByEmail(email)
+
+	if err != nil {
+		return nil, "", err
+	}
+
+	if user == nil {
+		return nil, "", fmt.Errorf("user not found with that email. please sign up")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.password_hash), []byte(password))
+	if err != nil {
+		return nil, "", fmt.Errorf("incorrect password. please try again")
+	}
+
+	// create session
+	sessionToken := uuid.New().String()
+
+	// insert session
+	query := `INSERT INTO sessions (user_id, session_token, expires_at) VALUES (?, ?, ?)`
+	_, err = s.db.Exec(query, user.id, sessionToken, time.Now().Add(24*time.Hour))
+
+	if err != nil {
+		return nil, "", fmt.Errorf("error creating session for user")
+	}
+
+	return user, sessionToken, nil
+}
+
+func (s *service) LogoutUser(sessionToken string) error {
+	query := `DELETE FROM sessions WHERE session_token = ?`
+	_, err := s.db.Exec(query, sessionToken)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type Session struct {
+	ID           int
+	UserID       int
+	SessionToken string
+	ExpiresAt    time.Time
+}
+
+func (s *service) GetSession(name string) (*Session, error) {
+	var session Session
+
+	query := `SELECT id, user_id, session_token, expires_at FROM sessions WHERE session_token = ?`
+	row := s.db.QueryRow(query, name)
+	err := row.Scan(&session.ID, &session.UserID, &session.SessionToken, &session.ExpiresAt)
+
+	fmt.Println("session", session)
+	fmt.Println("session.expires_at", session.ExpiresAt)
+
+	return &session, err
 }

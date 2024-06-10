@@ -1,49 +1,47 @@
 package web
 
+import "life-streams/cmd/web"
+
 templ SignupPage() {
-	<!DOCTYPE html>
-	<html lang="en">
-		<head>
-			<meta charset="utf-8"/>
-			<title>Signup</title>
-			<script src="assets/js/htmx.min.js"></script>
-		</head>
-		<body>
-			<main>
-        <h1>Signup</h1>
-        <div id="form-response">
-          <!-- Form response will be rendered here -->
-        </div>
-        <form hx-post="/signup_post" method="POST" hx-target="#form-response">
-          <fieldset>
-            <legend>Signup</legend>
-            <div>
-              <label for="email">Email:</label> 
-              <input type="email" id="email" name="email" required />
-            </div>
-            <div>
-              <label for="password">Password:</label> 
-              <input type="text" id="password" name="password" required minlength="6" maxlength="10" />
-            </div>
-            <button type="submit">Sign Up</button>
-          </fieldset>
-        </form>
-			</main>
-		</body>
-	</html>
+	@web.Base() {
+		<h1>Signup</h1>
+		<div id="form-response">
+			<!-- Form response will be rendered here -->
+		</div>
+		<form hx-post="/signup_post" method="POST" hx-target="#form-response">
+			<fieldset>
+				<legend>Signup</legend>
+				<div>
+					<label for="email">Email:</label>
+					<input type="email" id="email" name="email" required/>
+				</div>
+				<div>
+					<label for="password">Password:</label>
+					<input type="text" id="password" name="password" required minlength="6" maxlength="10"/>
+				</div>
+				<button type="submit">Sign Up</button>
+			</fieldset>
+			<a href="/login">Login</a>
+		</form>
+	}
 }
 
-templ SignupErrorResponseWithMessage(message string, isError bool) {
-  if isError {
-    <p class="message error">{ message }</p>
-  }
-  else {
-    <p class="message success">{ message }</p>
-  }
+templ SignUpError(message string) {
+  <div>
+    <p>{ message }</p>
+  </div>
 }
 
-templ SignupErrorResponse() {
-  <p>
-    There was an error with your signup request
-  </p>
+templ SignUpSuccess() {
+  <script>
+    setTimeout(() => {
+      window.location.href = '/login'
+    }, 3000)
+  </script>
+
+  <div>
+    <p>Signup successful</p>
+    <p>Redirecting to login page...</p>
+  </div>
 }
+

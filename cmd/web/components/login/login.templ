@@ -1,0 +1,34 @@
+package web
+
+import "life-streams/cmd/web"
+
+templ LoginPage() {
+	@web.Base() {
+		<h1>Log In</h1>
+		<div id="form-response">
+			<!-- Form response will be rendered here -->
+		</div>
+		<form hx-post="/login_post" method="POST" hx-target="#form-response">
+			<fieldset>
+				<legend>Log In</legend>
+				<div>
+					<label for="email">Email:</label>
+					<input type="email" id="email" name="email" required/>
+				</div>
+				<div>
+					<label for="password">Password:</label>
+					<input type="text" id="password" name="password" required/>
+				</div>
+				<button type="submit">Log In</button>
+			</fieldset>
+			<a href="/signup">Sign Up</a>
+		</form>
+	}
+}
+
+templ LoginFailure(message string) {
+  <div>
+    <h2>Failed to log in!</h2>
+    <p>{message}</p>
+  </div>
+}

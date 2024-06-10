@@ -1,7 +1,8 @@
-package web
+package internal
 
 import (
 	"fmt"
+	signup_view "life-streams/cmd/web/components/signup"
 	db "life-streams/internal/database"
 	"net/http"
 )
@@ -12,15 +13,15 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error parsing form:", err)
 		http.Error(w, "Bad Request", http.StatusBadRequest)
 
-		component := SignupErrorResponse()
+		component := signup_view.SignUpError("Something went wrong parsing form. Please try again.")
 		_ = component.Render(r.Context(), w)
 	}
 
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 
-	// check if email already exists
 	var instance = db.New()
+	// check if email already exists
 	user, _ := instance.GetUserByEmail(email)
 
 	// if user is nil, create user
@@ -28,15 +29,14 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		err := instance.AddUser(email, password)
 
 		if err != nil {
-			component := SignupErrorResponseWithMessage("Something went wrong creating user", true)
+			component := signup_view.SignUpError("Something went wrong creating user")
 			component.Render(r.Context(), w)
 		} else {
-			component := SignupErrorResponseWithMessage("User created successfully", false)
+			component := signup_view.SignUpSuccess()
 			component.Render(r.Context(), w)
 		}
 	} else {
-		component := SignupErrorResponseWithMessage("User already exists with this email", true)
-		err = component.Render(r.Context(), w)
-		fmt.Println("User already exists")
+		component := signup_view.SignUpError("User already exists with this email")
+		component.Render(r.Context(), w)
 	}
 }

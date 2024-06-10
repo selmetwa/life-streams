@@ -5,10 +5,15 @@ templ Base() {
 	<html lang="en">
 		<head>
 			<meta charset="utf-8"/>
-			<title>Go Blueprint Hello</title>
+			<title>Life streams</title>
 			<script src="assets/js/htmx.min.js"></script>
 		</head>
 		<body>
+      <header>
+      <form action="/logout" method="POST">
+        <button type="submit">Logout</button>
+      </form>
+      </header>
 			<main>
 				{ children... }
 			</main>

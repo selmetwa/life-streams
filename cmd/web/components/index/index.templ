@@ -1,18 +1,9 @@
 package web
+import "life-streams/cmd/web"
 
 templ IndexPage() {
-	<!DOCTYPE html>
-	<html lang="en">
-		<head>
-			<meta charset="utf-8"/>
-			<title>Go Blueprint Hello</title>
-			<script src="assets/js/htmx.min.js"></script>
-		</head>
-		<body>
-			<main>
-        <h1>Welome to my website hahaha</h1>
-        <a href="/web">Say hi</a>
-			</main>
-		</body>
-	</html>
+  @web.Base() {
+    <h1>Home Page</h1>
+    <p>Please log in</p>
+  }
 }
