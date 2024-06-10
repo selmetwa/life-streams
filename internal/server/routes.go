@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -22,24 +21,23 @@ import (
 	"github.com/a-h/templ"
 )
 
-func authGatedMiddleware(next http.Handler, nextRedirect http.Handler) http.Handler {
+func authGatedMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		sessionToken, err := r.Cookie("session_token")
 
 		if err != nil {
-			nextRedirect.ServeHTTP(w, r)
+			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
 
 		var token = session_handler.SessionHandler(sessionToken.Value)
 		var sessionExpiresAt = token.ExpiresAt
-		fmt.Println("sessionExpiresAt", sessionExpiresAt)
 
 		currentTime := time.Now()
 		var isExpiredToken = sessionExpiresAt.Before(currentTime)
 
 		if sessionToken.Value == "" || isExpiredToken {
-			nextRedirect.ServeHTTP(w, r)
+			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
 
@@ -47,7 +45,7 @@ func authGatedMiddleware(next http.Handler, nextRedirect http.Handler) http.Hand
 	})
 }
 
-func alreadyLoggedInMiddleware(next http.Handler, nextRedirect http.Handler) http.Handler {
+func alreadyLoggedInMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		sessionToken, err := r.Cookie("session_token")
 
@@ -63,7 +61,7 @@ func alreadyLoggedInMiddleware(next http.Handler, nextRedirect http.Handler) htt
 		var isExpiredToken = sessionExpiresAt.Before(currentTime)
 
 		if sessionToken.Value != "" && !isExpiredToken {
-			nextRedirect.ServeHTTP(w, r)
+			http.Redirect(w, r, "/dashboard", http.StatusFound)
 			return
 		}
 
@@ -79,14 +77,14 @@ func (s *Server) RegisterRoutes() http.Handler {
 	fileServer := http.FileServer(http.FS(web.Files))
 	mux.Handle("/assets/", fileServer)
 
-	mux.Handle("/dashboard", authGatedMiddleware(templ.Handler(dashboard.Dashboard()), templ.Handler(login_view.LoginPage())))
+	mux.Handle("/dashboard", authGatedMiddleware(templ.Handler(dashboard.Dashboard())))
 
-	mux.Handle("/", alreadyLoggedInMiddleware(templ.Handler(index.IndexPage()), templ.Handler(dashboard.Dashboard())))
+	mux.Handle("/", alreadyLoggedInMiddleware(templ.Handler(index.IndexPage())))
 
-	mux.Handle("/signup", alreadyLoggedInMiddleware(templ.Handler(signup_view.SignupPage()), templ.Handler(dashboard.Dashboard())))
+	mux.Handle("/signup", alreadyLoggedInMiddleware(templ.Handler(signup_view.SignupPage())))
 	mux.HandleFunc("/signup_post", signup_handler.SignupHandler)
 
-	mux.Handle("/login", alreadyLoggedInMiddleware(templ.Handler(login_view.LoginPage()), templ.Handler(dashboard.Dashboard())))
+	mux.Handle("/login", alreadyLoggedInMiddleware(templ.Handler(login_view.LoginPage())))
 	mux.HandleFunc("/login_post", login_handler.LoginHandler)
 
 	mux.HandleFunc("/logout", logout_handler.LogoutHandler)
