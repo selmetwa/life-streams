@@ -12,12 +12,13 @@ Beep boop boop
 - Web components (maybe lit)
 - Modern css
 - Import maps
-- Auth 
+- Auth [x]
 - Html drag and drop
 - Html popover
 - No build js
 - Jsdoc 
 - Semantic html
+- dark mode []
 
 ## Getting Started
 

@@ -23,22 +23,22 @@ func Base(isLoggedIn bool) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Life streams</title><script src=\"assets/js/htmx.min.js\"></script></head><body><header>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n\n    :root {\n      --font-main: 'DM Sans', sans-serif;\n    }\n\n    body {\n      font-family: var(--font-main);\n    }\n\n    \n    .main {\n      border: 1px solid blue;\n      width: min(90%, 1000px);\n      margin-inline: auto;\n      background-color: #f5f5f5;\n      height: 100%;\n    }\n\n    .header {\n      border: 1px solid red;\n      margin-inline: auto;\n      padding: 16px 0;\n\n      > nav {\n        display: flex;\n        width: 100%;\n        place-content: end;\n\n        > ul {\n          display: flex;\n          width: fit-content;\n          align-items: center;\n          list-style: none;\n          padding: 0;\n          margin: 0;\n\n          > li {\n            display: inline;\n            margin: 0 10px;\n          }\n        }\n      }\n    }\n\n  </style><!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Life streams</title><script src=\"assets/js/htmx.min.js\"></script><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;display=swap\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"assets/css/reset.css\"></head><body><main class=\"main\"><header class=\"header\"><nav><ul>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if isLoggedIn {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a href=\"/dashboard\">dashboard</a><form action=\"/logout\" method=\"POST\"><button type=\"submit\">Logout</button></form>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a href=\"/dashboard\">dashboard</a></li><li><form action=\"/logout\" method=\"POST\"><button type=\"submit\">Logout</button></form></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a href=\"/login\">Login</a> <a href=\"/signup\">sign up</a>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><a href=\"/\">Home</a></li><li><a href=\"/login\">Login</a></li><li><a href=\"/signup\">sign up</a></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</header><main>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</ul></nav></header><div class=\"content\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -46,7 +46,7 @@ func Base(isLoggedIn bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</main></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></main></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
