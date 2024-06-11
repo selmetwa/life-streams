@@ -2,7 +2,55 @@ package web
 import "life-streams/cmd/web"
 
 templ Dashboard(isLoggedIn bool) {
+
+  <style> 
+    .box {
+      height: 50px;
+      width: 50px;
+    }
+
+    .one {
+      background-color: var(--tile1)
+    }
+
+    .two {
+      background-color: var(--tile2)
+    }
+
+    .three {
+      background-color: var(--tile3)
+    }
+
+    .four {
+      background-color: var(--tile4)
+    }
+
+    .five {
+      background-color: var(--tile5)
+    }
+
+    .six {
+      background-color: var(--tile6)
+    }
+
+    .red {
+      background-color: var(--red1)
+    }
+
+    .green {
+      background-color: var(--green1)
+    }
+  </style>
   @web.Base(isLoggedIn) {
     <h1>Dashboard</h1>
+
+    <div class="box one"></div>
+    <div class="box two"></div>
+    <div class="box three"></div>
+    <div class="box four"></div>
+    <div class="box five"></div>
+    <div class="box six"></div>
+    <div class="box red"></div>
+    <div class="box green"></div>
   }
 }

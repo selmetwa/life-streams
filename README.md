@@ -7,7 +7,7 @@ Beep boop boop
 - Sqlite [x]
 - templ [x]
 - htmx [x]
-- Sql
+- Sql [x]
 - View transitions
 - Web components (maybe lit)
 - Modern css
@@ -18,7 +18,7 @@ Beep boop boop
 - No build js
 - Jsdoc 
 - Semantic html
-- dark mode []
+- dark mode [x]
 
 ## Getting Started
 

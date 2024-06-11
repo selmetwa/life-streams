@@ -9,20 +9,21 @@ templ Base(isLoggedIn bool) {
 
     body {
       font-family: var(--font-main);
+      background-color: var(--tile2);
     }
 
     
     .main {
-      border: 1px solid blue;
+      outline: 1px solid var(--tile6);
       width: min(90%, 1000px);
       margin-inline: auto;
-      background-color: #f5f5f5;
+      background-color: var(--tile3);
       height: 100%;
     }
 
     .header {
-      border: 1px solid red;
       margin-inline: auto;
+      border-bottom: 1px solid var(--tile6);
       padding: 16px 0;
 
       > nav {
@@ -58,31 +59,73 @@ templ Base(isLoggedIn bool) {
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 			<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet"/>
 			<link rel="stylesheet" href="assets/css/reset.css"/>
+			<script type="importmap">
+        {
+            "imports": {
+                "jsdoc": "/node_modules/@jsdoc/index.js"
+            }
+        }
+    </script>
 		</head>
 		<body>
-      <main class="main">
-			<header class="header">
-				<nav>
-					<ul>
-						if isLoggedIn {
-							<li><a href="/dashboard">dashboard</a></li>
-							<li>
-								<form action="/logout" method="POST">
-									<button type="submit">Logout</button>
-								</form>
-							</li>
-						} else {
-							<li><a href="/">Home</a></li>
-							<li><a href="/login">Login</a></li>
-							<li><a href="/signup">sign up</a></li>
-						}
-					</ul>
-				</nav>
-			</header>
-			<div class="content">
-				{ children... }
-			</div>
-      </main>
+			<main class="main">
+				<header class="header">
+					<nav>
+						<ul>
+							<li class="theme-toggle-wrapper"></li>
+							if isLoggedIn {
+								<li><a href="/dashboard">dashboard</a></li>
+								<li>
+									<form action="/logout" method="POST">
+										<button type="submit">Logout</button>
+									</form>
+								</li>
+							} else {
+								<li><a href="/">Home</a></li>
+								<li><a href="/login">Login</a></li>
+								<li><a href="/signup">sign up</a></li>
+							}
+						</ul>
+					</nav>
+				</header>
+				<div class="content">
+					{ children... }
+				</div>
+			</main>
+			<script>
+        const body = document.querySelector('body');
+        const colorSchemeFromLocalStorage = localStorage.getItem('color-scheme');
+        const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        const colorScheme = colorSchemeFromLocalStorage || (prefersDarkMode ? 'dim' : 'light');
+
+        body.setAttribute('color-scheme', colorScheme);
+
+
+        function deleteButton() {
+          const button = document.querySelector('.theme-toggle-wrapper button');
+          button.remove();
+        }
+
+        function createButton(theme) {
+          const wrapper = document.querySelector('.theme-toggle-wrapper');
+          const button = document.createElement('button');
+          button.textContent = theme === 'light' ? 'Light Mode' : 'Dark Mode';
+          button.addEventListener('mousedown', () => {
+            body.setAttribute('color-scheme', theme);
+            localStorage.setItem('color-scheme', theme);
+            deleteButton();
+            createButton(theme === 'light' ? 'dim' : 'light');
+          });
+          wrapper.appendChild(button);
+        }
+
+        if (colorScheme === 'dim') {
+          createButton('light')
+        } else {
+          createButton('dim')
+        }
+      </script>
 		</body>
 	</html>
 }
