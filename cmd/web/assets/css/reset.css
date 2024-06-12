@@ -177,3 +177,21 @@ h6 {
   --red1: var(--red-dim);
   --shadow-strength: var(--shadow-strength-dim);
 }
+
+@view-transition {
+  navigation: auto;
+}
+
+
+/* Old stuff going out */
+
+::view-transition-old(hero) {
+  animation: fade 5.2s linear forwards;
+}
+
+
+/* New stuff coming in */
+
+::view-transition-new(hero) {
+  animation: fade 5.3s linear reverse;
+}
