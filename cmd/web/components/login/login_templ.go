@@ -25,7 +25,7 @@ func LoginPage(isLoggedIn bool) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n  .wrapper {\n      display: flex;\n      justify-content: center;\n      flex-direction: column;\n      width: max(300px, 40%);\n      margin-inline: auto;\n      background-color: var(--tile4);\n      border-radius: 4px;\n      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n      border: 1px solid var(--tile3);\n  }\n\n    .form {\n      display: flex;\n      flex-direction: column; \n      width: 100%;\n      padding: 12px;\n\n      >h1 {\n        margin-bottom: 10px;\n        color: var(--text1);\n      }\n\n      .group {\n        width: 100%;\n        display: flex;\n        flex-direction: column;\n\n        > label {\n          margin-bottom: 5px;\n          color: var(--text1);\n        }\n      }\n\n      .button {\n        margin-top: 10px;\n        padding: 5px 10px;\n        background-color: var(--tile5);\n        color: var(--text1);\n        border: none;\n        width: 100%;\n        border-radius: 4px;\n        cursor: pointer;\n        transition: background-color 0.2s;\n\n        &:hover {\n          background-color: var(--tile6);\n        }\n      }\n    }\n\n  </style>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n  .wrapper {\n      display: flex;\n      justify-content: center;\n      flex-direction: column;\n      width: min(400px, 100%);\n      margin-inline: auto;\n      background-color: var(--tile4);\n      border-radius: 4px;\n      border: 1px solid var(--tile3);\n  }\n\n    .form {\n      display: flex;\n      flex-direction: column; \n      width: 100%;\n      padding: 12px;\n\n      >h1 {\n        margin-bottom: 10px;\n        color: var(--text1);\n      }\n\n      .group {\n        width: 100%;\n        display: flex;\n        flex-direction: column;\n\n        > label {\n          margin-bottom: 5px;\n          color: var(--text1);\n        }\n      }\n\n      .button {\n        margin-top: 10px;\n        padding: 5px 10px;\n        background-color: var(--tile5);\n        color: var(--text1);\n        border: none;\n        width: 100%;\n        border-radius: 4px;\n        cursor: pointer;\n        transition: background-color 0.2s;\n\n        &:hover {\n          background-color: var(--tile6);\n        }\n      }\n\n      > a {\n        margin-top: 10px;\n        color: var(--text1);\n        transition: color 0.2s;\n\n        &:hover {\n          color: var(--text2);\n        }\n      }\n    }\n\n  </style>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -75,7 +75,7 @@ func LoginFailure(message string) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/login/login.templ`, Line: 105, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/login/login.templ`, Line: 114, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {

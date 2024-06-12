@@ -8,11 +8,10 @@ templ LoginPage(isLoggedIn bool) {
       display: flex;
       justify-content: center;
       flex-direction: column;
-      width: max(300px, 40%);
+      width: min(400px, 100%);
       margin-inline: auto;
       background-color: var(--tile4);
       border-radius: 4px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       border: 1px solid var(--tile3);
   }
 
@@ -51,6 +50,16 @@ templ LoginPage(isLoggedIn bool) {
 
         &:hover {
           background-color: var(--tile6);
+        }
+      }
+
+      > a {
+        margin-top: 10px;
+        color: var(--text1);
+        transition: color 0.2s;
+
+        &:hover {
+          color: var(--text2);
         }
       }
     }
