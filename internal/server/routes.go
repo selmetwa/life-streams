@@ -20,6 +20,8 @@ import (
 	dashboard_handler "life-streams/internal/server/handlers/dashboard"
 	stream_handler "life-streams/internal/server/handlers/stream"
 
+	task_handler "life-streams/internal/server/handlers/tasks"
+
 	"github.com/a-h/templ"
 )
 
@@ -91,8 +93,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("/logout", logout_handler.LogoutHandler)
 
 	mux.HandleFunc("/create_stream", stream_handler.CreateStream)
-
 	mux.HandleFunc("/get_streams", stream_handler.RenderStreamList)
+
+	mux.HandleFunc("/create_task", task_handler.CreateTask)
 	return mux
 }
 

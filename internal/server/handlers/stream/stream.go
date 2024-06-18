@@ -63,7 +63,7 @@ func CreateStream(w http.ResponseWriter, r *http.Request) {
 		component.Render(r.Context(), w)
 	}
 
-	w.Header().Set("HX-Trigger", "newStream")
+	w.Header().Set("HX-Trigger", "refetchStreamList")
 
 	component := create_stream_view.CreateStreamSuccess(stream)
 	component.Render(r.Context(), w)

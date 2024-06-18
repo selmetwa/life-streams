@@ -15,6 +15,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type Stream struct {
+	ID          int
+	Title       string
+	Description string
+	Priority    int
+	Position    int
+	TasksCount  int
+}
+
+type Task struct {
+	ID          int
+	Title       string
+	Description string
+	StreamID    int
+}
+
 // Service represents a service that interacts with a database.
 type Service interface {
 	// Health returns a map of health status information.
@@ -34,6 +50,8 @@ type Service interface {
 	GetStreamByTitle(user_id int, title string) (*int, error)
 	CreateStream(user_id int, title, description string, priority int) (Stream, error)
 	GetStreamsByUserID(userId int) ([]Stream, error)
+	GetTaskByTitle(userId int, title string) (*int, error)
+	CreateTask(user_id int, stream_id int, title string, description string) (Task, error)
 }
 
 type service struct {
@@ -329,15 +347,6 @@ func (s *service) GetStreamByTitle(user_id int, title string) (*int, error) {
 	return id, nil
 }
 
-type Stream struct {
-	ID          int
-	Title       string
-	Description string
-	Priority    int
-	Position    int
-	TasksCount  int
-}
-
 func (s *service) CreateStream(user_id int, title, description string, priority int) (Stream, error) {
 	existing_streams_query := `SELECT position FROM streams WHERE user_id = ? ORDER BY position DESC LIMIT 1`
 
@@ -408,4 +417,46 @@ func (s *service) GetStreamsByUserID(userId int) ([]Stream, error) {
 	}
 
 	return streams, nil
+}
+
+func (s *service) GetTaskByTitle(userId int, title string) (*int, error) {
+	taskQuery := `SELECT id from tasks where user_id = ? AND title = ?`
+	row := s.db.QueryRow(taskQuery, userId, title)
+
+	var id *int
+	err := row.Scan(&id)
+	if err != nil {
+		return nil, err
+	}
+
+	return id, nil
+}
+
+func (s *service) CreateTask(user_id int, stream_id int, title string, description string) (Task, error) {
+	var Task Task
+
+	var create_task_statement = `INSERT into tasks (user_id, stream_id, title, description, priority, position) VALUES (?,?,?,?,?,?)`
+
+	res, err := s.db.Exec(create_task_statement, user_id, stream_id, title, description, 0, 0)
+
+	if err != nil {
+		fmt.Println("error creating task", err)
+	}
+
+	lastInsertId, _ := res.LastInsertId()
+	fmt.Println("lastInsertId", lastInsertId)
+	fmt.Println("lastInsertId", lastInsertId)
+
+	query := `SELECT id, title, description, stream_id FROM tasks WHERE id = ? AND user_id = ?`
+	task_row := s.db.QueryRow(query, lastInsertId, user_id)
+
+	fmt.Println("task_row", task_row)
+	// Step 4: Assign the row values to your stream variable
+	err = task_row.Scan(&Task.ID, &Task.Title, &Task.Description, &Task.StreamID)
+
+	if err != nil {
+		fmt.Println("error", err)
+	}
+
+	return Task, nil
 }

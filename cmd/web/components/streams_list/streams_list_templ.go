@@ -28,7 +28,7 @@ func StreamsList(streams []db.Stream) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"streams\" hx-trigger=\"newStream from:body\" hx-get=\"/get_streams\" hx-swap=\"outerHTML\"><style>\n\n      .empty {\n        margin: 0;\n        color: var(--text2);\n        font-size: 1rem;\n        font-weight: 500;\n      }\n\n\n         .streams {\n            list-style-type: none;\n      padding: 0;\n      display: grid;\n      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));\n      gap: 10px;\n      flex-direction: column;\n    }\n\n        .stream-wrapper {\n      padding: 1rem;\n      background-color: var(--tile5);\n      border: 1px solid var(--tile6);\n      border-radius: 0.5rem;\n      cursor: move;\n      color: var(--text1);\n    }\n  </style>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"streams\" hx-trigger=\"refetchStreamList from:body\" hx-get=\"/get_streams\" hx-swap=\"outerHTML\"><style>\n\n      .empty {\n        margin: 0;\n        color: var(--text2);\n        font-size: 1rem;\n        font-weight: 500;\n      }\n\n\n         .streams {\n            list-style-type: none;\n      padding: 0;\n      display: grid;\n      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));\n      gap: 10px;\n      flex-direction: column;\n    }\n\n        .stream-wrapper {\n      padding: 1rem;\n      background-color: var(--tile5);\n      border: 1px solid var(--tile6);\n      border-radius: 0.5rem;\n      cursor: move;\n      color: var(--text1);\n    }\n  </style>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

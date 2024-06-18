@@ -3,6 +3,7 @@ package web
 import (
 	"life-streams/cmd/web"
 	create_stream_modal "life-streams/cmd/web/components/create_stream_modal"
+  create_task_modal "life-streams/cmd/web/components/create_task_modal"
   streams_list "life-streams/cmd/web/components/streams_list"
 	db "life-streams/internal/database"
 )
@@ -19,10 +20,19 @@ templ Dashboard(isLoggedIn bool, streams []db.Stream) {
         font-weight: bold;
       }
     }
+
+    .modals-wrapper {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
   </style>
 	@web.Base(isLoggedIn) {
 		<section class="wrapper">
-    	@create_stream_modal.CreateStreamModal()
+      <div class="modals-wrapper">
+    	  @create_stream_modal.CreateStreamModal()
+        @create_task_modal.CreateTaskModal(streams)
+      </div>
 			<h2>Streams</h2>
       @streams_list.StreamsList(streams)
 		</section>
