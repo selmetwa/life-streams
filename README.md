@@ -13,12 +13,37 @@ Beep boop boop
 - Modern css
 - Import maps
 - Auth [x]
-- Html drag and drop
-- Html popover
+- Html drag and drop [x]
+- Html popover [x]
 - No build js
 - Jsdoc 
-- Semantic html
+- Semantic html [x]
 - dark mode [x]
+
+schema
+ - streams
+  - created_at
+  - updated_at
+  - id
+  - user_id
+  - description
+  - title
+  - priority
+  - stream_id
+  - position
+
+ - task
+  - id
+  - user_id
+  - stream_id
+  - type
+  - priority
+  - title
+  - description
+  - due_date
+  - created_at
+  - updated_at
+  - position
 
 ## Getting Started
 

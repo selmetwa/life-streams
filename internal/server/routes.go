@@ -7,7 +7,6 @@ import (
 	"time"
 
 	web "life-streams/cmd/web"
-	dashboard "life-streams/cmd/web/components/dashboard"
 	index "life-streams/cmd/web/components/index"
 	signup_view "life-streams/cmd/web/components/signup"
 	signup_handler "life-streams/internal/server/handlers/signup"
@@ -17,6 +16,9 @@ import (
 
 	logout_handler "life-streams/internal/server/handlers/logout"
 	session_handler "life-streams/internal/server/handlers/session"
+
+	dashboard_handler "life-streams/internal/server/handlers/dashboard"
+	stream_handler "life-streams/internal/server/handlers/stream"
 
 	"github.com/a-h/templ"
 )
@@ -77,8 +79,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	fileServer := http.FileServer(http.FS(web.Files))
 	mux.Handle("/assets/", fileServer)
 
-	mux.Handle("/dashboard", authGatedMiddleware(templ.Handler(dashboard.Dashboard(true))))
-
+	mux.HandleFunc("/dashboard", dashboard_handler.DashboardHandler)
 	mux.Handle("/", alreadyLoggedInMiddleware(templ.Handler(index.IndexPage(false))))
 
 	mux.Handle("/signup", alreadyLoggedInMiddleware(templ.Handler(signup_view.SignupPage(false))))
@@ -89,6 +90,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	mux.HandleFunc("/logout", logout_handler.LogoutHandler)
 
+	mux.HandleFunc("/create_stream", stream_handler.CreateStream)
+
+	mux.HandleFunc("/get_streams", stream_handler.RenderStreamList)
 	return mux
 }
 

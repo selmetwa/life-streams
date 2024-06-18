@@ -10,9 +10,14 @@ import "context"
 import "io"
 import "bytes"
 
-import "life-streams/cmd/web"
+import (
+	"life-streams/cmd/web"
+	create_stream_modal "life-streams/cmd/web/components/create_stream_modal"
+	streams_list "life-streams/cmd/web/components/streams_list"
+	db "life-streams/internal/database"
+)
 
-func Dashboard(isLoggedIn bool) templ.Component {
+func Dashboard(isLoggedIn bool, streams []db.Stream) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -25,7 +30,7 @@ func Dashboard(isLoggedIn bool) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style> \n    .box {\n      height: 50px;\n      width: 50px;\n    }\n\n    .one {\n      background-color: var(--tile1)\n    }\n\n    .two {\n      background-color: var(--tile2)\n    }\n\n    .three {\n      background-color: var(--tile3)\n    }\n\n    .four {\n      background-color: var(--tile4)\n    }\n\n    .five {\n      background-color: var(--tile5)\n    }\n\n    .six {\n      background-color: var(--tile6)\n    }\n\n    .red {\n      background-color: var(--red1)\n    }\n\n    .green {\n      background-color: var(--green1)\n    }\n  </style>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    .wrapper {\n      padding: 2rem;\n\n      > h2 {\n        margin: 1rem 0;\n        color: var(--text1);\n        font-size: 1.25rem;\n        font-weight: bold;\n      }\n    }\n  </style>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -35,7 +40,23 @@ func Dashboard(isLoggedIn bool) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1>Dashboard</h1><div class=\"box one\"></div><div class=\"box two\"></div><div class=\"box three\"></div><div class=\"box four\"></div><div class=\"box five\"></div><div class=\"box six\"></div><div class=\"box red\"></div><div class=\"box green\"></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"wrapper\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = create_stream_modal.CreateStreamModal().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h2>Streams</h2>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = streams_list.StreamsList(streams).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
