@@ -3,8 +3,9 @@ package internal
 import (
 	"fmt"
 	dashboard_view "life-streams/cmd/web/components/dashboard"
-	db "life-streams/internal/database"
 	session_handler "life-streams/internal/server/handlers/session"
+	session_queries "life-streams/internal/server/handlers/session/queries"
+	stream_queries "life-streams/internal/server/handlers/stream/queries"
 	"net/http"
 	"time"
 )
@@ -28,10 +29,9 @@ func DashboardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var instance = db.New()
-	userId, _ := instance.GetUserIDFromSession(sessionToken.Value)
+	userId, _ := session_queries.GetUserIDFromSession(sessionToken.Value)
 
-	streams, _ := instance.GetStreamsByUserID(userId)
+	streams, _ := stream_queries.GetStreamsByUserID(userId)
 
 	fmt.Println(streams)
 

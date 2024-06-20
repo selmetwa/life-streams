@@ -1,6 +1,7 @@
 package web
 
-import db "life-streams/internal/database"
+import stream_types "life-streams/internal/server/handlers/stream/types"
+
 
 templ CreateStreamModal() {
 	<style>
@@ -91,14 +92,12 @@ templ CreateStreamModal() {
     const showButton = document.querySelector(".show-button");
     const favDialog = document.querySelector(".dialog");
 
-    // "Cancel" button closes the <dialog>
     document.querySelector(".cancel").addEventListener("click", () => {
       document.querySelector(".form").reset();
       const formResponse = document.querySelector("#form-response");
       formResponse.innerHTML = "";
       favDialog.close();
     });
-    // "Show the dialog" button opens the <dialog> modally
     showButton.addEventListener("click", () => {
       favDialog.showModal();
     });
@@ -135,7 +134,7 @@ templ CreateStreamError(message string) {
 
 var helloHandle = templ.NewOnceHandle()
 
-templ CreateStreamSuccess(stream db.Stream) {
+templ CreateStreamSuccess(stream stream_types.Stream) {
 	<style>
     .success-wrapper {
       display: flex;

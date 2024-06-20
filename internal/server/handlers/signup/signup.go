@@ -3,7 +3,8 @@ package internal
 import (
 	"fmt"
 	signup_view "life-streams/cmd/web/components/signup"
-	db "life-streams/internal/database"
+	auth_mutations "life-streams/internal/server/handlers/auth/mutations"
+	auth_queries "life-streams/internal/server/handlers/auth/queries"
 	"net/http"
 )
 
@@ -20,13 +21,12 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 
-	var instance = db.New()
 	// check if email already exists
-	user, _ := instance.GetUserByEmail(email)
+	user, _ := auth_queries.GetUserByEmail(email)
 
 	// if user is nil, create user
 	if user == nil {
-		err := instance.AddUser(email, password)
+		err := auth_mutations.AddUser(email, password)
 
 		if err != nil {
 			component := signup_view.SignUpError("Something went wrong creating user")

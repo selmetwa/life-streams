@@ -1,11 +1,11 @@
 package web
 
 import (
-  db "life-streams/internal/database"
+  stream_types "life-streams/internal/server/handlers/stream/types"
   "strconv"
   )
 
-templ CreateTaskModal(streams []db.Stream) {
+templ CreateTaskModal(streams []stream_types.Stream) {
 	<style>
     dialog {
       position: absolute;

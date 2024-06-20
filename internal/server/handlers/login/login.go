@@ -3,7 +3,7 @@ package web
 import (
 	"fmt"
 	login_view "life-streams/cmd/web/components/login"
-	db "life-streams/internal/database"
+	auth_mutations "life-streams/internal/server/handlers/auth/mutations"
 	"net/http"
 	"time"
 )
@@ -19,8 +19,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	// check if email already exists
-	var instance = db.New()
-	user, sessionToken, err := instance.LoginUser(email, password)
+	user, sessionToken, err := auth_mutations.LoginUser(email, password)
 
 	if err != nil {
 		fmt.Println("Error logging in user:", err)

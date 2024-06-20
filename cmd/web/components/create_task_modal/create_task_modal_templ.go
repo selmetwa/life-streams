@@ -11,11 +11,11 @@ import "io"
 import "bytes"
 
 import (
-	db "life-streams/internal/database"
+	stream_types "life-streams/internal/server/handlers/stream/types"
 	"strconv"
 )
 
-func CreateTaskModal(streams []db.Stream) templ.Component {
+func CreateTaskModal(streams []stream_types.Stream) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {

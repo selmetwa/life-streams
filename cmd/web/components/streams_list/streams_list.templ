@@ -2,13 +2,19 @@ package web
 
 import (
 	"fmt"
-	db "life-streams/internal/database"
+	stream_types "life-streams/internal/server/handlers/stream/types"
+	create_stream_modal "life-streams/cmd/web/components/create_stream_modal"
+	create_task_modal "life-streams/cmd/web/components/create_task_modal"
 )
 
-templ StreamsList(streams []db.Stream) {
-	<ul class="streams" hx-trigger="refetchStreamList from:body" hx-get="/get_streams" hx-swap="outerHTML">
-      <style>
-
+templ StreamsList(streams []stream_types.Stream) {
+	<div class="streams">
+		<style>
+      .modals-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+      }
       .empty {
         margin: 0;
         color: var(--text2);
@@ -16,48 +22,58 @@ templ StreamsList(streams []db.Stream) {
         font-weight: 500;
       }
 
+      .streams {
+        border: 1px solid red;
+      }
 
-         .streams {
-            list-style-type: none;
-      padding: 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 10px;
-      flex-direction: column;
-    }
-
-        .stream-wrapper {
-      padding: 1rem;
-      background-color: var(--tile5);
-      border: 1px solid var(--tile6);
-      border-radius: 0.5rem;
-      cursor: move;
-      color: var(--text1);
-    }
+      .streams-list {
+        list-style-type: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 10px;
+        flex-direction: column;
+      }
+      .stream-wrapper {
+        padding: 1rem;
+        background-color: var(--tile5);
+        border: 1px solid var(--tile6);
+        border-radius: 0.5rem;
+        cursor: move;
+        color: var(--text1);
+      }
   </style>
-
-    if len(streams) == 0 {
-      <p class="empty">No streams found</p>
-    } else {
-		for _, stream := range streams {
-			<li
-				class="stream-wrapper"
-				draggable="true"
-				ondragover="dragOver(event)"
-				ondragstart="dragStart(event)"
-				ondragend="dragEnd(event)"
-				ontouchstart="touchStart(event)"
-				ontouchmove="touchMove(event)"
-				ontouchend="touchEnd(event)"
-			>
-				<h3>{ stream.Title }</h3>
-				<p>{ stream.Description }</p>
-				<p>Tasks: { fmt.Sprintf("%d", stream.TasksCount) }</p>
-			</li>
-		}
-    }
-
-    <script>
+		<div class="modals-wrapper">
+			@create_stream_modal.CreateStreamModal()
+			@create_task_modal.CreateTaskModal(streams)
+		</div>
+		<h2>Streams</h2>
+		<section>
+			if len(streams) == 0 {
+				<p class="empty">No streams found</p>
+			} else {
+				<ul class="streams-list">
+					for _, stream := range streams {
+						<li
+							class="stream-wrapper"
+							draggable="true"
+							ondragover="dragOver(event)"
+							ondragstart="dragStart(event)"
+							ondragend="dragEnd(event)"
+							ontouchstart="touchStart(event)"
+							ontouchmove="touchMove(event)"
+							ontouchend="touchEnd(event)"
+						>
+							<h3>{ stream.Title }</h3>
+							<p>{ stream.Description }</p>
+							<p>Tasks: { fmt.Sprintf("%d", stream.ID) }</p>
+							<p>Tasks: { fmt.Sprintf("%d", stream.TasksCount) }</p>
+						</li>
+					}
+				</ul>
+			}
+		</section>
+		<script>
       let selected = null
 
       function dragOver(e) {
@@ -119,5 +135,5 @@ templ StreamsList(streams []db.Stream) {
         return false;
       }
     </script>
-	</ul>
+	</div>
 }

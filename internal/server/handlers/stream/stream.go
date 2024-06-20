@@ -4,8 +4,10 @@ import (
 	"fmt"
 	create_stream_view "life-streams/cmd/web/components/create_stream_modal"
 	streams_list_view "life-streams/cmd/web/components/streams_list"
-	db "life-streams/internal/database"
 	session_handler "life-streams/internal/server/handlers/session"
+	session_queries "life-streams/internal/server/handlers/session/queries"
+	stream_mutations "life-streams/internal/server/handlers/stream/mutations"
+	stream_queries "life-streams/internal/server/handlers/stream/queries"
 	"net/http"
 	"time"
 )
@@ -36,8 +38,7 @@ func CreateStream(w http.ResponseWriter, r *http.Request) {
 
 	sessionToken, _ := r.Cookie("session_token")
 
-	var instance = db.New()
-	userId, err := instance.GetUserIDFromSession(sessionToken.Value)
+	userId, err := session_queries.GetUserIDFromSession(sessionToken.Value)
 
 	if err != nil {
 		component := create_stream_view.CreateStreamError(err.Error())
@@ -46,7 +47,7 @@ func CreateStream(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	stream_id, _ := instance.GetStreamByTitle(userId, streamName)
+	stream_id, _ := stream_queries.GetStreamByTitle(userId, streamName)
 
 	if stream_id != nil {
 		component := create_stream_view.CreateStreamError("Stream with this name already exists")
@@ -56,7 +57,7 @@ func CreateStream(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Stream does not exist, creating stream")
 
-	stream, err := instance.CreateStream(userId, streamName, description, priorityAsInt)
+	stream, err := stream_mutations.CreateStream(userId, streamName, description, priorityAsInt)
 
 	if err != nil {
 		component := create_stream_view.CreateStreamError(err.Error())
@@ -88,10 +89,9 @@ func RenderStreamList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var instance = db.New()
-	userId, _ := instance.GetUserIDFromSession(sessionToken.Value)
+	userId, _ := session_queries.GetUserIDFromSession(sessionToken.Value)
 
-	streams, _ := instance.GetStreamsByUserID(userId)
+	streams, _ := stream_queries.GetStreamsByUserID(userId)
 
 	fmt.Println(streams)
 

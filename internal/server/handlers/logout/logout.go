@@ -2,7 +2,7 @@ package web
 
 import (
 	"fmt"
-	db "life-streams/internal/database"
+	auth_mutations "life-streams/internal/server/handlers/auth/mutations"
 	"net/http"
 )
 
@@ -15,8 +15,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("sessionToken: ", sessionToken)
 
-	var instance = db.New()
-	err = instance.LogoutUser(sessionToken.Value)
+	err = auth_mutations.LogoutUser(sessionToken.Value)
 
 	if err != nil {
 		fmt.Println("error logging out user: ", err)

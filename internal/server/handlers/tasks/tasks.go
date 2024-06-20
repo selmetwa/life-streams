@@ -3,7 +3,9 @@ package internal
 import (
 	"fmt"
 	create_task_modal_view "life-streams/cmd/web/components/create_task_modal"
-	db "life-streams/internal/database"
+	session_queries "life-streams/internal/server/handlers/session/queries"
+	task_mutations "life-streams/internal/server/handlers/tasks/mutations"
+	task_queries "life-streams/internal/server/handlers/tasks/queries"
 	"net/http"
 	"strconv"
 )
@@ -24,8 +26,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 
 	sessionToken, _ := r.Cookie("session_token")
 
-	var instance = db.New()
-	userId, err := instance.GetUserIDFromSession(sessionToken.Value)
+	userId, err := session_queries.GetUserIDFromSession(sessionToken.Value)
 
 	if err != nil {
 		component := create_task_modal_view.CreateTaskError(err.Error())
@@ -33,7 +34,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task_id, _ := instance.GetTaskByTitle(userId, taskName)
+	task_id, _ := task_queries.GetTaskByTitle(userId, taskName)
 
 	if task_id != nil {
 		component := create_task_modal_view.CreateTaskError("Task with this name already exists")
@@ -43,7 +44,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Task does not exist, creating task")
 
-	task, err := instance.CreateTask(userId, streamId, taskName, description)
+	task, err := task_mutations.CreateTask(userId, streamId, taskName, description)
 
 	if err != nil {
 		component := create_task_modal_view.CreateTaskError(err.Error())
