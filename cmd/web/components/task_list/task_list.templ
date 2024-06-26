@@ -1,37 +1,13 @@
 package web
 
 import (
-	"fmt"
-  "strconv"
-	stream_types "life-streams/internal/server/handlers/stream/types"
-	create_stream_modal "life-streams/cmd/web/components/create_stream_modal"
-	create_task_modal "life-streams/cmd/web/components/create_task_modal"
+  "fmt"
+  task_types "life-streams/internal/server/handlers/tasks/types"
 )
 
-func SafeURL(url string) templ.SafeURL {
-  return templ.SafeURL(url)
-}
-
-templ StreamsList(streams []stream_types.Stream) {
-	<div class="streams">
-		<style>
-      .modals-wrapper {
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
-      }
-      .empty {
-        margin: 0;
-        color: var(--text2);
-        font-size: 1rem;
-        font-weight: 500;
-      }
-
-      .streams {
-        border: 1px solid red;
-      }
-
-      .streams-list {
+templ TaskList(tasks []task_types.Task) {
+  <style>
+      .tasks-list {
         list-style-type: none;
         padding: 0;
         display: grid;
@@ -39,7 +15,7 @@ templ StreamsList(streams []stream_types.Stream) {
         gap: 10px;
         flex-direction: column;
       }
-      .stream-wrapper {
+      .task-wrapper {
         padding: 1rem;
         background-color: var(--tile5);
         border: 1px solid var(--tile6);
@@ -47,45 +23,32 @@ templ StreamsList(streams []stream_types.Stream) {
         cursor: move;
         color: var(--text1);
       }
-
-      .streams-list-title {
-        color: var(--text1);
-        font-size: 1.5rem;
-        font-weight: 500;
-        margin: 8px 0; 
-      }
   </style>
-		<div class="modals-wrapper">
-			@create_stream_modal.CreateStreamModal()
-			@create_task_modal.CreateTaskModal(streams)
-		</div>
-		<h2 class="streams-list-title">Streams</h2>
-		<section>
-			if len(streams) == 0 {
-				<p class="empty">No streams found</p>
+  		<section>
+			if len(tasks) == 0 {
+				<p class="empty">No tasks found</p>
 			} else {
-				<ul class="streams-list">
-					for _, stream := range streams {
+				<ul class="tasks-list">
+					for _, task := range tasks {
 						<li
-							class="stream-wrapper"
+							class="task-wrapper"
 							draggable="true"
 						>
-							<h3>{ stream.Title }</h3>
-							<p>{ stream.Description }</p>
-							<p>id: { fmt.Sprintf("%d", stream.ID) }</p>
-							<p>Tasks: { fmt.Sprintf("%d", stream.TasksCount) }</p>
-              <a href={templ.URL("/stream/" + strconv.Itoa(stream.ID))}>Details</a>
+							<h3>{ task.Title }</h3>
+							<p>{ task.Description }</p>
+							<p>id: { fmt.Sprintf("%d", task.ID) }</p>
 						</li>
 					}
 				</ul>
 			}
 		</section>
-		<script>
+
+    		<script>
     (() => {
       let selected = null
 
-      const streamWrappers = document.querySelectorAll('.stream-wrapper')
-      streamWrappers.forEach(wrapper => {
+      const taskWrappers = document.querySelectorAll('.task-wrapper')
+      taskWrappers.forEach(wrapper => {
         wrapper.addEventListener('dragover', dragOver)
         wrapper.addEventListener('dragstart', dragStart)
         wrapper.addEventListener('dragend', dragEnd)
@@ -95,7 +58,7 @@ templ StreamsList(streams []stream_types.Stream) {
       })
       function dragOver(e) {
         e.preventDefault();
-        if (e.target.classList.contains('stream-wrapper') && e.target !== selected) {
+        if (e.target.classList.contains('task-wrapper') && e.target !== selected) {
           if (isBefore(selected, e.target)) {
             e.target.parentNode.insertBefore(selected, e.target);
           } else {
@@ -111,7 +74,6 @@ templ StreamsList(streams []stream_types.Stream) {
       }
 
       function dragStart(e) {
-        console.log({ e })
         e.dataTransfer.effectAllowed = 'move'
         e.dataTransfer.setData('text/plain', null)
         selected = e.target
@@ -119,13 +81,13 @@ templ StreamsList(streams []stream_types.Stream) {
       }
 
       function touchStart(e) {
-        selected = e.target.closest('.stream-wrapper');
+        selected = e.target.closest('.task-wrapper');
       }
 
       function touchMove(e) {
         e.preventDefault();
         const touch = e.touches[0];
-        const target = document.elementFromPoint(touch.clientX, touch.clientY).closest('.stream-wrapper');
+        const target = document.elementFromPoint(touch.clientX, touch.clientY).closest('.task-wrapper');
         if (target && target !== selected) {
           e.target.style.opacity = '0.4'
           if (isBefore(selected, target)) {
@@ -153,5 +115,4 @@ templ StreamsList(streams []stream_types.Stream) {
       }
     })()
     </script>
-	</div>
 }

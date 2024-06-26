@@ -2,7 +2,7 @@ package internal
 
 import (
 	"fmt"
-	signup_view "life-streams/cmd/web/components/signup"
+	signup_view "life-streams/cmd/web/pages/signup"
 	auth_mutations "life-streams/internal/server/handlers/auth/mutations"
 	auth_queries "life-streams/internal/server/handlers/auth/queries"
 	"net/http"

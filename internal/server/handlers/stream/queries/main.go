@@ -21,6 +21,7 @@ type Stream struct {
 type StreamQueries interface {
 	GetStreamsByUserID(userId int) ([]stream_types.Stream, error)
 	GetStreamByTitle(user_id int, title string) (*int, error)
+	GetStreamTitleById(user_id int, stream_id int) (*string, error)
 }
 
 func GetStreamsByUserID(userId int) ([]stream_types.Stream, error) {
@@ -53,7 +54,6 @@ func GetStreamsByUserID(userId int) ([]stream_types.Stream, error) {
 
 		tasksCountQuery := `SELECT COUNT(*) FROM tasks WHERE stream_id = ? AND user_id = ?`
 		database.QueryRow(tasksCountQuery, stream.ID, userId).Scan(&count)
-		fmt.Println("count", count)
 
 		stream.TasksCount = count
 		streams = append(streams, stream)
@@ -75,4 +75,20 @@ func GetStreamByTitle(user_id int, title string) (*int, error) {
 	}
 
 	return id, nil
+}
+
+func GetStreamTitleById(user_id int, stream_id int) (string, error) {
+	database := database.New()
+	query := `SELECT title from streams where id = ?`
+
+	var title string
+
+	err := database.QueryRow(query, stream_id).Scan(&title)
+	if err != nil {
+		fmt.Println("Error executing query:", err)
+	}
+
+	fmt.Println("title: ", title)
+
+	return title, nil
 }

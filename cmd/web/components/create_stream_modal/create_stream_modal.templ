@@ -89,6 +89,7 @@ templ CreateStreamModal() {
 		</dialog>
 		<button class="show-button">Create Stream</button>
 	<script>
+  (() => {
     const showButton = document.querySelector(".show-button");
     const favDialog = document.querySelector(".dialog");
 
@@ -101,6 +102,7 @@ templ CreateStreamModal() {
     showButton.addEventListener("click", () => {
       favDialog.showModal();
     });
+  })()
   </script>
 }
 

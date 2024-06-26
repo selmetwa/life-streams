@@ -7,11 +7,11 @@ import (
 	"time"
 
 	web "life-streams/cmd/web"
-	index "life-streams/cmd/web/components/index"
-	signup_view "life-streams/cmd/web/components/signup"
+	index "life-streams/cmd/web/pages/index"
+	signup_view "life-streams/cmd/web/pages/signup"
 	signup_handler "life-streams/internal/server/handlers/signup"
 
-	login_view "life-streams/cmd/web/components/login"
+	login_view "life-streams/cmd/web/pages/login"
 	login_handler "life-streams/internal/server/handlers/login"
 
 	logout_handler "life-streams/internal/server/handlers/logout"
@@ -95,6 +95,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("/create_stream", stream_handler.CreateStream)
 	mux.HandleFunc("/get_streams", stream_handler.RenderStreamList)
 
+	mux.HandleFunc("/stream/{id}", stream_handler.StreamPage)
 	mux.HandleFunc("/create_task", task_handler.CreateTask)
 	return mux
 }

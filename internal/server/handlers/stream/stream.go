@@ -4,11 +4,14 @@ import (
 	"fmt"
 	create_stream_view "life-streams/cmd/web/components/create_stream_modal"
 	streams_list_view "life-streams/cmd/web/components/streams_list"
+	stream_page "life-streams/cmd/web/pages/stream"
 	session_handler "life-streams/internal/server/handlers/session"
 	session_queries "life-streams/internal/server/handlers/session/queries"
 	stream_mutations "life-streams/internal/server/handlers/stream/mutations"
 	stream_queries "life-streams/internal/server/handlers/stream/queries"
+	task_queries "life-streams/internal/server/handlers/tasks/queries"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -96,5 +99,45 @@ func RenderStreamList(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(streams)
 
 	component := streams_list_view.StreamsList(streams)
+	component.Render(r.Context(), w)
+}
+
+func StreamPage(w http.ResponseWriter, r *http.Request) {
+	sessionToken, err := r.Cookie("session_token")
+
+	stream_id_str := r.PathValue("id")
+	streamId, _ := strconv.Atoi(stream_id_str)
+
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	var token = session_handler.SessionHandler(sessionToken.Value)
+	var sessionExpiresAt = token.ExpiresAt
+
+	currentTime := time.Now()
+	var isExpiredToken = sessionExpiresAt.Before(currentTime)
+
+	if sessionToken.Value == "" || isExpiredToken {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	userId, _ := session_queries.GetUserIDFromSession(sessionToken.Value)
+
+	fmt.Println("User ID: ", userId)
+	fmt.Println("stream ID: ", streamId)
+
+	tasks, err := task_queries.GetTaskByStreamID(userId, streamId)
+	title, _ := stream_queries.GetStreamTitleById(userId, streamId)
+
+	if err != nil {
+		fmt.Println("something went wrong getting tasks", err)
+	}
+
+	fmt.Println("title: ", title)
+
+	component := stream_page.StreamPage(true, tasks, title)
 	component.Render(r.Context(), w)
 }

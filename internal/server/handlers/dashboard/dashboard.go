@@ -2,7 +2,7 @@ package internal
 
 import (
 	"fmt"
-	dashboard_view "life-streams/cmd/web/components/dashboard"
+	dashboard_view "life-streams/cmd/web/pages/dashboard"
 	session_handler "life-streams/internal/server/handlers/session"
 	session_queries "life-streams/internal/server/handlers/session/queries"
 	stream_queries "life-streams/internal/server/handlers/stream/queries"

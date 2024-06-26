@@ -2,7 +2,7 @@ package web
 
 import (
 	"fmt"
-	login_view "life-streams/cmd/web/components/login"
+	login_view "life-streams/cmd/web/pages/login"
 	auth_mutations "life-streams/internal/server/handlers/auth/mutations"
 	"net/http"
 	"time"

@@ -64,7 +64,7 @@ func CreateTaskModal(streams []stream_types.Stream) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select></div><div class=\"buttons\"><button value=\"cancel\" type=\"button\" class=\"button task-cancel\">Cancel</button> <button type=\"submit\" class=\"button submit\">Submit</button></div></form></dialog> <button class=\"show-task-modal-button\">Create Task</button><script>\n    const showTaskModalButton = document.querySelector(\".show-task-modal-button\");\n    const taskModalDialog = document.querySelector(\".task-modal-dialog\");\n\n    // \"Cancel\" button closes the <dialog>\n    document.querySelector(\".task-cancel\").addEventListener(\"click\", () => {\n      document.querySelector(\".task-form\").reset();\n      document.querySelector(\"#task-modal-form-response\").innerHTML = \"\";\n      taskModalDialog.close();\n    });\n    // \"Show the dialog\" button opens the <dialog> modally\n    showTaskModalButton.addEventListener(\"click\", () => {\n      taskModalDialog.showModal();\n    });\n  </script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select></div><div class=\"buttons\"><button value=\"cancel\" type=\"button\" class=\"button task-cancel\">Cancel</button> <button type=\"submit\" class=\"button submit\">Submit</button></div></form></dialog> <button class=\"show-task-modal-button\">Create Task</button><script>\n    (() => {\n      console.log(\"Create Task Modal Loaded\");\n      const showTaskModalButton = document.querySelector(\".show-task-modal-button\");\n      const taskModalDialog = document.querySelector(\".task-modal-dialog\");\n\n      // \"Cancel\" button closes the <dialog>\n      document.querySelector(\".task-cancel\").addEventListener(\"click\", () => {\n        document.querySelector(\".task-form\").reset();\n        document.querySelector(\"#task-modal-form-response\").innerHTML = \"\";\n        taskModalDialog.close();\n      });\n      // \"Show the dialog\" button opens the <dialog> modally\n      showTaskModalButton.addEventListener(\"click\", () => {\n        taskModalDialog.showModal();\n      });\n    })()\n  </script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -95,7 +95,7 @@ func CreateTaskError(message string) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/create_task_modal/create_task_modal.templ`, Line: 144, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/create_task_modal/create_task_modal.templ`, Line: 147, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {

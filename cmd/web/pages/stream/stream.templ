@@ -1,0 +1,28 @@
+package web
+
+import (
+  "life-streams/cmd/web"
+  task_types "life-streams/internal/server/handlers/tasks/types"
+  task_list "life-streams/cmd/web/components/task_list"
+)
+
+templ StreamPage(isLoggedin bool, tasks []task_types.Task, title string) {
+  <style>
+    .wrapper {
+      padding: 2rem;
+
+      > h2 {
+        margin: 1rem 0;
+        color: var(--text1);
+        font-size: 1.25rem;
+        font-weight: bold;
+      }
+    }
+  </style>
+	@web.Base(isLoggedin) {
+    <section class="wrapper">
+		<h2>{ title }</h2>
+    @task_list.TaskList(tasks)
+    </section>
+	}
+}

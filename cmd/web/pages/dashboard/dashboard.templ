@@ -24,11 +24,6 @@ templ Dashboard(isLoggedIn bool, streams []stream_types.Stream) {
   </style>
 	@web.Base(isLoggedIn) {
 		<section class="wrapper" hx-trigger="refetchStreamList from:body" hx-get="/get_streams" hx-swap="innerHTML" id="stream-list">
-      // <div class="modals-wrapper">
-    	//   @create_stream_modal.CreateStreamModal()
-      //   @create_task_modal.CreateTaskModal(streams)
-      // </div>
-			// <h2>Streams</h2>
       @streams_list.StreamsList(streams)
 		</section>
 	}

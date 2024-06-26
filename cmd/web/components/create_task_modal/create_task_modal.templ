@@ -101,19 +101,22 @@ templ CreateTaskModal(streams []stream_types.Stream) {
 		</dialog>
 		<button class="show-task-modal-button">Create Task</button>
 	<script>
-    const showTaskModalButton = document.querySelector(".show-task-modal-button");
-    const taskModalDialog = document.querySelector(".task-modal-dialog");
+    (() => {
+      console.log("Create Task Modal Loaded");
+      const showTaskModalButton = document.querySelector(".show-task-modal-button");
+      const taskModalDialog = document.querySelector(".task-modal-dialog");
 
-    // "Cancel" button closes the <dialog>
-    document.querySelector(".task-cancel").addEventListener("click", () => {
-      document.querySelector(".task-form").reset();
-      document.querySelector("#task-modal-form-response").innerHTML = "";
-      taskModalDialog.close();
-    });
-    // "Show the dialog" button opens the <dialog> modally
-    showTaskModalButton.addEventListener("click", () => {
-      taskModalDialog.showModal();
-    });
+      // "Cancel" button closes the <dialog>
+      document.querySelector(".task-cancel").addEventListener("click", () => {
+        document.querySelector(".task-form").reset();
+        document.querySelector("#task-modal-form-response").innerHTML = "";
+        taskModalDialog.close();
+      });
+      // "Show the dialog" button opens the <dialog> modally
+      showTaskModalButton.addEventListener("click", () => {
+        taskModalDialog.showModal();
+      });
+    })()
   </script>
 }
 
