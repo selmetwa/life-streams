@@ -12,11 +12,19 @@ import "bytes"
 
 import (
 	"life-streams/cmd/web"
+	create_task_modal "life-streams/cmd/web/components/create_task_modal"
 	task_list "life-streams/cmd/web/components/task_list"
+	stream_types "life-streams/internal/server/handlers/stream/types"
 	task_types "life-streams/internal/server/handlers/tasks/types"
 )
 
-func StreamPage(isLoggedin bool, tasks []task_types.Task, title string) templ.Component {
+func StreamPage(
+	isLoggedin bool,
+	tasks []task_types.Task,
+	title string,
+	streamID string,
+	streams []stream_types.Stream,
+) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -29,7 +37,7 @@ func StreamPage(isLoggedin bool, tasks []task_types.Task, title string) templ.Co
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    .wrapper {\n      padding: 2rem;\n\n      > h2 {\n        margin: 1rem 0;\n        color: var(--text1);\n        font-size: 1.25rem;\n        font-weight: bold;\n      }\n    }\n  </style>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    .stream-page-wrapper {\n      padding: 2rem;\n      position: relative;\n  \n      > h2 {  \n        margin: 1rem 0;\n        color: var(--text1);\n        font-size: 1.25rem;\n        font-weight: bold;\n      }\n    }\n\n    .stream-header {\n      margin-bottom: 1rem;\n\n      > h2 {\n        margin: 1rem 0;\n        color: var(--text1);\n        font-size: 1.25rem;\n        font-weight: bold;\n      }\n\n      > div {\n        display: flex;\n        flex-direction: row;\n        gap: 1rem;\n      }\n    }\n\n    .delete-stream-dialog {\n      position: absolute;\n      top: 50%;\n      left: 50%;\n      transform: translate(-50%, -50%);\n      width: min(500px, 100%);\n      background-color: var(--tile4);\n      border: 1px solid var(--tile1);\n\n      > div {\n        width: 100%;\n        margin-top: 1rem;\n        display: flex;\n        flex-direction: row;\n        gap: 1rem;\n      }\n    }\n  </style>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -39,20 +47,54 @@ func StreamPage(isLoggedin bool, tasks []task_types.Task, title string) templ.Co
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"wrapper\"><h2>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"stream-page-wrapper\"><dialog class=\"delete-stream-dialog\"><div id=\"delete-stream-response\"><!-- Form response will be rendered here --></div><p>Are you sure you want to delete this stream</p><div><button class=\"close-delete-dialog\">Close</button><form hx-post=\"/delete_stream\" hx-target=\"#delete-stream-response\"><input type=\"hidden\" name=\"streamID\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(title)
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(streamID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/pages/stream/stream.templ`, Line: 24, Col: 13}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/pages/stream/stream.templ`, Line: 76, Col: 64}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <button class=\"confirm-delete\" type=\"submit\">Delete</button></form></div></dialog><header class=\"stream-header\"><h2>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var4 string
+			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(title)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/pages/stream/stream.templ`, Line: 83, Col: 15}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div><button class=\"open-delete-modal\">Delete</button>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = create_task_modal.CreateTaskModal(streams, streamID).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></header><div hx-trigger=\"refetchTasks from:body\" hx-get=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var5 string
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("/stream/" + streamID)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/pages/stream/stream.templ`, Line: 89, Col: 76}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-swap=\"innerHTML\" id=\"task-list\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -60,7 +102,7 @@ func StreamPage(isLoggedin bool, tasks []task_types.Task, title string) templ.Co
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</section>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -70,6 +112,58 @@ func StreamPage(isLoggedin bool, tasks []task_types.Task, title string) templ.Co
 			return templ_7745c5c3_Err
 		})
 		templ_7745c5c3_Err = web.Base(isLoggedin).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n    (() => {\n      const dialog = document.querySelector('.delete-stream-dialog');\n      const button = document.querySelector('.open-delete-modal');\n      const closeDeleteDialog = document.querySelector('.close-delete-dialog');\n\n\n      closeDeleteDialog.addEventListener('click', () => {\n        dialog.close();\n      });\n  \n      button.addEventListener('click', () => {\n        dialog.showModal();\n      });\n\n      dialog.addEventListener('close', () => {\n        dialog.close();\n      });\n    })()\n  </script>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func DeleteStreamError() templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var6 == nil {
+			templ_7745c5c3_Var6 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    .error-wrapper {\n      display: flex;\n      justify-content: start;\n      flex-direction: column;\n      width: 100%;\n      padding: 12px;\n      text-align: left;\n      background-color: var(--red1);\n      margin-bottom: 1rem;\n\n      > h2 {\n        font-size: 1.25rem;\n        color: var(--text1);\n      }\n\n      > p {\n        font-size: 1rem;\n        color: var(--text1);\n      }\n    }\n  </style><div class=\"error-wrapper\"><h2>Deletion failed</h2><p>Something went wrong</p></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func DeleteStreamSuccess() templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var7 == nil {
+			templ_7745c5c3_Var7 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    .success-wrapper {\n      display: flex;\n      justify-content: start;\n      flex-direction: column;\n      width: 100%;\n      padding: 12px;\n      text-align: left;\n      background-color: var(--green1);\n      margin-bottom: 1rem;\n\n      > h2 {\n        font-size: 1.25rem;\n        color: var(--text1);\n      }\n\n      > p {\n        font-size: 1rem;\n        color: var(--text1);\n      }\n    }\n  </style><script>\n    setTimeout(() => {\n      window.location.href = '/dashboard'\n    }, 3000)\n  </script><div class=\"success-wrapper\"><h2>Stream deleted successfully</h2><p>Redirecting to dashboard...</p></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

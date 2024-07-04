@@ -132,12 +132,50 @@ func StreamPage(w http.ResponseWriter, r *http.Request) {
 	tasks, err := task_queries.GetTaskByStreamID(userId, streamId)
 	title, _ := stream_queries.GetStreamTitleById(userId, streamId)
 
+	streams, _ := stream_queries.GetStreamsByUserID(userId)
+
 	if err != nil {
 		fmt.Println("something went wrong getting tasks", err)
 	}
 
 	fmt.Println("title: ", title)
 
-	component := stream_page.StreamPage(true, tasks, title)
+	component := stream_page.StreamPage(true, tasks, title, stream_id_str, streams)
+	component.Render(r.Context(), w)
+}
+
+func DeleteStream(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("DELETE STREAM")
+	sessionToken, err := r.Cookie("session_token")
+
+	streamID := r.FormValue("streamID")
+	streamIDInt, _ := strconv.Atoi(streamID)
+
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	var token = session_handler.SessionHandler(sessionToken.Value)
+	var sessionExpiresAt = token.ExpiresAt
+
+	currentTime := time.Now()
+	var isExpiredToken = sessionExpiresAt.Before(currentTime)
+
+	if sessionToken.Value == "" || isExpiredToken {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	userId, _ := session_queries.GetUserIDFromSession(sessionToken.Value)
+
+	err = stream_mutations.DeleteStream(userId, streamIDInt)
+
+	if err != nil {
+		component := stream_page.DeleteStreamError()
+		component.Render(r.Context(), w)
+	}
+
+	component := stream_page.DeleteStreamSuccess()
 	component.Render(r.Context(), w)
 }

@@ -5,7 +5,7 @@ import (
   "strconv"
   )
 
-templ CreateTaskModal(streams []stream_types.Stream) {
+templ CreateTaskModal(streams []stream_types.Stream, streamID string) {
 	<style>
     dialog {
       position: absolute;
@@ -83,16 +83,21 @@ templ CreateTaskModal(streams []stream_types.Stream) {
 					<label for="description">Description</label>
 					<textarea id="description" name="description" required></textarea>
 				</div>
+        
+        if streamID != "" {
+          <input type="hidden" name="stream" value={ streamID } />
+        } else {
+          <div class="group">
+            <label for="stream">Stream</label>
+            <select id="stream" name="stream" required>
+              <option value="" disabled selected>Select a stream</option>
+                for _, stream := range streams {
+                  <option value={ strconv.Itoa(stream.ID) }>{stream.Title}</option>
+                }
+            </select>
+          </div>
+        }
 
-        <div class="group">
-          <label for="stream">Stream</label>
-          <select id="stream" name="stream" required>
-            <option value="" disabled selected>Select a stream</option>
-              for _, stream := range streams {
-                <option value={ strconv.Itoa(stream.ID) }>{stream.Title}</option>
-              }
-          </select>
-        </div>
 				<div class="buttons">
 					<button value="cancel" type="button" class="button task-cancel">Cancel</button>
 					<button type="submit" class="button submit">Submit</button>

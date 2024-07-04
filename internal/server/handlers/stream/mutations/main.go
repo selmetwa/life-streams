@@ -11,6 +11,7 @@ import (
 
 type StreamMutation interface {
 	CreateStream(userId int, title string, description string, priority int) (int, error)
+	DeleteStream(userId int, streamID int)
 }
 
 type Stream struct {
@@ -50,11 +51,25 @@ func CreateStream(user_id int, title, description string, priority int) (stream_
 		return stream, err // handle error
 	}
 
-	fmt.Println("stream", stream)
-
 	if err != nil {
 		return stream, fmt.Errorf("something went wrong creating stream")
 	}
 
 	return stream, nil
+}
+
+func DeleteStream(userId int, streamID int) error {
+	database := database.New()
+	delete_stream_mutation := `DELETE FROM streams WHERE user_id = ? AND id = ?`
+
+	row, err := database.Exec(delete_stream_mutation, userId, streamID)
+
+	if err != nil {
+		fmt.Println("something went wrong deleting stream: ", err)
+		return err
+	}
+
+	fmt.Println("row: ", row)
+
+	return nil
 }

@@ -57,7 +57,7 @@ templ StreamsList(streams []stream_types.Stream) {
   </style>
 		<div class="modals-wrapper">
 			@create_stream_modal.CreateStreamModal()
-			@create_task_modal.CreateTaskModal(streams)
+			@create_task_modal.CreateTaskModal(streams, "")
 		</div>
 		<h2 class="streams-list-title">Streams</h2>
 		<section>
