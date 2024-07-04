@@ -95,8 +95,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("/create_stream", stream_handler.CreateStream)
 	mux.HandleFunc("/get_streams", stream_handler.RenderStreamList)
 	mux.HandleFunc("/stream/{id}", stream_handler.StreamPage)
-
 	mux.HandleFunc("/delete_stream", stream_handler.DeleteStream)
+
+	mux.HandleFunc("/get_tasks/{id}", task_handler.RenderTaskList)
 	mux.HandleFunc("/create_task", task_handler.CreateTask)
 	return mux
 }

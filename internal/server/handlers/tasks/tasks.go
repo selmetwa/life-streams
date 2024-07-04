@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 	create_task_modal_view "life-streams/cmd/web/components/create_task_modal"
+	task_list "life-streams/cmd/web/components/task_list"
 	session_queries "life-streams/internal/server/handlers/session/queries"
 	task_mutations "life-streams/internal/server/handlers/tasks/mutations"
 	task_queries "life-streams/internal/server/handlers/tasks/queries"
@@ -13,7 +14,6 @@ import (
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		fmt.Println("Error parsing form:", err)
 		http.Error(w, "Bad Request", http.StatusBadRequest)
 	}
 
@@ -21,8 +21,6 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	description := r.FormValue("description")
 	streamIdStr := r.FormValue("stream")
 	streamId, _ := strconv.Atoi(streamIdStr)
-
-	fmt.Println("Stream ID: ", streamId)
 
 	sessionToken, _ := r.Cookie("session_token")
 
@@ -42,8 +40,6 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Task does not exist, creating task")
-
 	task, err := task_mutations.CreateTask(userId, streamId, taskName, description)
 
 	if err != nil {
@@ -57,5 +53,19 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("HX-Trigger", "refetchTasks")
 
 	component := create_task_modal_view.CreateTaskSuccess()
+	component.Render(r.Context(), w)
+}
+
+func RenderTaskList(w http.ResponseWriter, r *http.Request) {
+	stream_id_str := r.PathValue("id")
+	streamId, _ := strconv.Atoi(stream_id_str)
+
+	tasks, err := task_queries.GetTaskByStreamID(streamId)
+
+	if err != nil {
+		fmt.Println("something went wrong getting tasks", err)
+	}
+
+	component := task_list.TaskList(tasks)
 	component.Render(r.Context(), w)
 }

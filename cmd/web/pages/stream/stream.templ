@@ -86,7 +86,7 @@ templ StreamPage(
 			    @create_task_modal.CreateTaskModal(streams, streamID)
         </div>
 			</header>
-      <div hx-trigger="refetchTasks from:body" hx-get={"/stream/" + streamID} hx-swap="innerHTML" id="task-list">
+      <div hx-trigger="refetchTasks from:body" hx-get={"/get_tasks/" + streamID} hx-swap="innerHTML" id="task-list">
 			  @task_list.TaskList(tasks)
       </div>
 		</section>

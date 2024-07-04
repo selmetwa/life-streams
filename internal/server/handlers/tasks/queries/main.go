@@ -24,11 +24,11 @@ func GetTaskByTitle(userId int, title string) (*int, error) {
 	return id, nil
 }
 
-func GetTaskByStreamID(userId int, streamId int) ([]task_types.Task, error) {
+func GetTaskByStreamID(streamId int) ([]task_types.Task, error) {
 	database := database.New()
-	tasksQuery := `SELECT id, stream_id, title, description FROM tasks WHERE user_id = ? AND stream_id = ? ORDER BY updated_at DESC`
+	tasksQuery := `SELECT id, stream_id, title, description FROM tasks WHERE stream_id = ? ORDER BY updated_at DESC`
 
-	rows, err := database.Query(tasksQuery, userId, streamId)
+	rows, err := database.Query(tasksQuery, streamId)
 
 	fmt.Println("task_rows: ", rows)
 	if err != nil {

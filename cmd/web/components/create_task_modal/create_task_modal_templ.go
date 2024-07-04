@@ -155,7 +155,7 @@ func CreateTaskSuccess() templ.Component {
 			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    .success-wrapper {\n      display: flex;\n      justify-content: start;\n      flex-direction: column;\n      width: 100%;\n      padding: 12px;\n      text-align: left;\n      background-color: var(--green1);\n\n      > h2 {\n        font-size: 1.25rem;\n        color: var(--text1);\n      }\n    }\n  </style><script>\n    let form = document.querySelector('.task-form');\n    form.reset();\n    let dialog = document.querySelector('.task-modal-dialog');\n    setTimeout(() => {\n      dialog.close();\n    }, 3000)\n  </script><div class=\"success-wrapper\"><h2>Task created successfully</h2></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    .success-wrapper {\n      display: flex;\n      justify-content: start;\n      flex-direction: column;\n      width: 100%;\n      padding: 12px;\n      text-align: left;\n      background-color: var(--green1);\n\n      > h2 {\n        font-size: 1.25rem;\n        color: var(--text1);\n      }\n    }\n  </style><script>\n    (() => {\n      let form = document.querySelector('.task-form');\n      form.reset();\n      let dialog = document.querySelector('.task-modal-dialog');\n      setTimeout(() => {\n        dialog.close();\n      }, 3000)\n    })()\n  </script><div class=\"success-wrapper\"><h2>Task created successfully</h2></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

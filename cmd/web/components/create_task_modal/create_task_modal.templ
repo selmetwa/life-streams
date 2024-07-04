@@ -173,12 +173,14 @@ templ CreateTaskSuccess() {
     }
   </style>
   <script>
-    let form = document.querySelector('.task-form');
-    form.reset();
-    let dialog = document.querySelector('.task-modal-dialog');
-    setTimeout(() => {
-      dialog.close();
-    }, 3000)
+    (() => {
+      let form = document.querySelector('.task-form');
+      form.reset();
+      let dialog = document.querySelector('.task-modal-dialog');
+      setTimeout(() => {
+        dialog.close();
+      }, 3000)
+    })()
   </script>
 	<div class="success-wrapper">
 		<h2>Task created successfully</h2>

@@ -126,10 +126,7 @@ func StreamPage(w http.ResponseWriter, r *http.Request) {
 
 	userId, _ := session_queries.GetUserIDFromSession(sessionToken.Value)
 
-	fmt.Println("User ID: ", userId)
-	fmt.Println("stream ID: ", streamId)
-
-	tasks, err := task_queries.GetTaskByStreamID(userId, streamId)
+	tasks, err := task_queries.GetTaskByStreamID(streamId)
 	title, _ := stream_queries.GetStreamTitleById(userId, streamId)
 
 	streams, _ := stream_queries.GetStreamsByUserID(userId)
@@ -137,8 +134,6 @@ func StreamPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("something went wrong getting tasks", err)
 	}
-
-	fmt.Println("title: ", title)
 
 	component := stream_page.StreamPage(true, tasks, title, stream_id_str, streams)
 	component.Render(r.Context(), w)
