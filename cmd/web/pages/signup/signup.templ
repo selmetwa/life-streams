@@ -3,75 +3,15 @@ package web
 import "life-streams/cmd/web"
 
 templ SignupPage(isLoggedIn bool) {
-	<style>
-  .wrapper {
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      width: min(400px, 100%);
-      margin-inline: auto;
-      background-color: var(--tile4);
-      border-radius: 4px;
-      border: 1px solid var(--tile3);
-  }
+  <!DOCTYPE html>
 
-    .form {
-      display: flex;
-      flex-direction: column; 
-      width: 100%;
-      padding: 12px;
-
-      >h1 {
-        margin-bottom: 10px;
-        color: var(--text1);
-      }
-
-      .group {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-
-        > label {
-          margin-bottom: 5px;
-          color: var(--text1);
-        }
-      }
-
-      .button {
-        margin-top: 10px;
-        padding: 5px 10px;
-        background-color: var(--tile5);
-        color: var(--text1);
-        border: none;
-        width: 100%;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-
-        &:hover {
-          background-color: var(--tile6);
-        }
-      }
-
-      > a {
-        margin-top: 10px;
-        color: var(--text1);
-        transition: color 0.2s;
-
-        &:hover {
-          color: var(--text2);
-        }
-      }
-    }
-
-  </style>
 	@web.Base(isLoggedIn) {
-		<section class="wrapper">
+		<section class="auth-wrapper">
 			<div id="form-response">
 				<!-- Form response will be rendered here -->
 			</div>
-			<form hx-post="/signup_post" method="POST" hx-target="#form-response" class="form">
-				<h1>Signup</h1>
+			<form hx-post="/signup_post" method="POST" hx-target="#form-response">
+				<h2>Signup</h2>
 				<div class="group">
 					<label for="email">Email:</label>
 					<input type="email" id="email" name="email" required/>
@@ -88,62 +28,20 @@ templ SignupPage(isLoggedIn bool) {
 }
 
 templ SignUpError(message string) {
-	<style>
-    .error-wrapper {
-      display: flex;
-      justify-content: start;
-      flex-direction: column;
-      width: 100%;
-      padding: 12px;
-      text-align: left;
-      background-color: var(--red1);
-
-      > h2 {
-        font-size: 1.25rem;
-        color: var(--text1);
-      }
-
-      > p {
-        font-size: 1rem;
-        color: var(--text1);
-      }
-    }
-  </style>
 	<div class="error-wrapper">
-		<h2>Signup failed</h2>
+		<h3>Signup failed</h3>
 		<p>{ message }</p>
 	</div>
 }
 
 templ SignUpSuccess() {
-	<style>
-    .success-wrapper {
-      display: flex;
-      justify-content: start;
-      flex-direction: column;
-      width: 100%;
-      padding: 12px;
-      text-align: left;
-      background-color: var(--green1);
-
-      > h2 {
-        font-size: 1.25rem;
-        color: var(--text1);
-      }
-
-      > p {
-        font-size: 1rem;
-        color: var(--text1);
-      }
-    }
-  </style>
 	<script>
     setTimeout(() => {
       window.location.href = '/login'
     }, 3000)
   </script>
 	<div class="success-wrapper">
-		<h2>Signup successful</h2>
+		<h3>Signup successful</h3>
 		<p>Redirecting to login page...</p>
 	</div>
 }

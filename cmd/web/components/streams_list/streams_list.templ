@@ -2,79 +2,39 @@ package web
 
 import (
 	"fmt"
-  "strconv"
+	"strconv"
 	stream_types "life-streams/internal/server/handlers/stream/types"
 	create_stream_modal "life-streams/cmd/web/components/create_stream_modal"
 	create_task_modal "life-streams/cmd/web/components/create_task_modal"
 )
 
 func SafeURL(url string) templ.SafeURL {
-  return templ.SafeURL(url)
+	return templ.SafeURL(url)
 }
 
 templ StreamsList(streams []stream_types.Stream) {
-	<div class="streams">
-		<style>
-      .modals-wrapper {
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
-      }
-      .empty {
-        margin: 0;
-        color: var(--text2);
-        font-size: 1rem;
-        font-weight: 500;
-      }
-
-      .streams {
-        border: 1px solid red;
-      }
-
-      .streams-list {
-        list-style-type: none;
-        padding: 0;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 10px;
-        flex-direction: column;
-      }
-      .stream-wrapper {
-        padding: 1rem;
-        background-color: var(--tile5);
-        border: 1px solid var(--tile6);
-        border-radius: 0.5rem;
-        cursor: move;
-        color: var(--text1);
-      }
-
-      .streams-list-title {
-        color: var(--text1);
-        font-size: 1.5rem;
-        font-weight: 500;
-        margin: 8px 0; 
-      }
-  </style>
-		<div class="modals-wrapper">
+	<div>
+		<div class="buttons-wrapper">
 			@create_stream_modal.CreateStreamModal()
 			@create_task_modal.CreateTaskModal(streams, "")
 		</div>
-		<h2 class="streams-list-title">Streams</h2>
+		<h2>Streams</h2>
 		<section>
 			if len(streams) == 0 {
-				<p class="empty">No streams found</p>
+				<h2 class="empty">No streams found</h2>
 			} else {
-				<ul class="streams-list">
+				<ul class="grid">
 					for _, stream := range streams {
 						<li
-							class="stream-wrapper"
+							class="card"
 							draggable="true"
 						>
 							<h3>{ stream.Title }</h3>
 							<p>{ stream.Description }</p>
-							<p>id: { fmt.Sprintf("%d", stream.ID) }</p>
 							<p>Tasks: { fmt.Sprintf("%d", stream.TasksCount) }</p>
-              <a href={templ.URL("/stream/" + strconv.Itoa(stream.ID))}>Details</a>
+							<a href={ templ.URL("/stream/" + strconv.Itoa(stream.ID)) }>
+								<button>Details</button>
+							</a>
 						</li>
 					}
 				</ul>
@@ -84,7 +44,7 @@ templ StreamsList(streams []stream_types.Stream) {
     (() => {
       let selected = null
 
-      const streamWrappers = document.querySelectorAll('.stream-wrapper')
+      const streamWrappers = document.querySelectorAll('.card')
       streamWrappers.forEach(wrapper => {
         wrapper.addEventListener('dragover', dragOver)
         wrapper.addEventListener('dragstart', dragStart)
@@ -95,7 +55,7 @@ templ StreamsList(streams []stream_types.Stream) {
       })
       function dragOver(e) {
         e.preventDefault();
-        if (e.target.classList.contains('stream-wrapper') && e.target !== selected) {
+        if (e.target.classList.contains('card') && e.target !== selected) {
           if (isBefore(selected, e.target)) {
             e.target.parentNode.insertBefore(selected, e.target);
           } else {
@@ -119,13 +79,13 @@ templ StreamsList(streams []stream_types.Stream) {
       }
 
       function touchStart(e) {
-        selected = e.target.closest('.stream-wrapper');
+        selected = e.target.closest('.card');
       }
 
       function touchMove(e) {
         e.preventDefault();
         const touch = e.touches[0];
-        const target = document.elementFromPoint(touch.clientX, touch.clientY).closest('.stream-wrapper');
+        const target = document.elementFromPoint(touch.clientX, touch.clientY).closest('.card');
         if (target && target !== selected) {
           e.target.style.opacity = '0.4'
           if (isBefore(selected, target)) {

@@ -7,6 +7,22 @@ import (
 )
 
 type TaskMutations interface {
+	CreateTask(user_id int, stream_id int, title string, description string) (task_types.Task, error)
+	DeleteTask(taskID int) error
+	EditTask(taskID int, taskName string, description string, streamID int) error
+}
+
+func DeleteTask(taskID int) error {
+	database := database.New()
+	var delete_task_statement = `DELETE FROM tasks where id = ?`
+
+	_, err := database.Exec(delete_task_statement, taskID)
+
+	if err != nil {
+		fmt.Println("something went wrong deleting task: ", err)
+	}
+
+	return nil
 }
 
 func CreateTask(user_id int, stream_id int, title string, description string) (task_types.Task, error) {
@@ -22,14 +38,10 @@ func CreateTask(user_id int, stream_id int, title string, description string) (t
 	}
 
 	lastInsertId, _ := res.LastInsertId()
-	fmt.Println("lastInsertId", lastInsertId)
-	fmt.Println("lastInsertId", lastInsertId)
 
 	query := `SELECT id, title, description, stream_id FROM tasks WHERE id = ? AND user_id = ?`
 	task_row := database.QueryRow(query, lastInsertId, user_id)
 
-	fmt.Println("task_row", task_row)
-	// Step 4: Assign the row values to your stream variable
 	err = task_row.Scan(&Task.ID, &Task.Title, &Task.Description, &Task.StreamID)
 
 	if err != nil {
@@ -37,4 +49,20 @@ func CreateTask(user_id int, stream_id int, title string, description string) (t
 	}
 
 	return Task, nil
+}
+
+func EditTask(taskID int, taskName string, description string, streamID int) error {
+	database := database.New()
+
+	var edit_task_statement = `UPDATE tasks SET title = ?, description = ?, stream_id = ? WHERE id = ?`
+	res, err := database.Exec(edit_task_statement, taskName, description, streamID, taskID)
+
+	if err != nil {
+		fmt.Println("something went wrong updating task: ", err)
+
+		return err
+	}
+
+	fmt.Println("res: ", res)
+	return nil
 }

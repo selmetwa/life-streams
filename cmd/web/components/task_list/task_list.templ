@@ -1,53 +1,87 @@
 package web
 
 import (
-  "fmt"
-  task_types "life-streams/internal/server/handlers/tasks/types"
+	"fmt"
+	"strconv"
+	task_types "life-streams/internal/server/handlers/tasks/types"
+	stream_types "life-streams/internal/server/handlers/stream/types"
 )
 
-templ TaskList(tasks []task_types.Task) {
-  <style>
-      .tasks-list {
-        list-style-type: none;
-        padding: 0;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 10px;
-        flex-direction: column;
-      }
-      .task-wrapper {
-        padding: 1rem;
-        background-color: var(--tile5);
-        border: 1px solid var(--tile6);
-        border-radius: 0.5rem;
-        cursor: move;
-        color: var(--text1);
-      }
-  </style>
-  		<section>
-			if len(tasks) == 0 {
-				<p class="empty">No tasks found</p>
-			} else {
-				<ul class="tasks-list">
-					for _, task := range tasks {
-						<li
-							class="task-wrapper"
-							draggable="true"
-						>
-							<h3>{ task.Title }</h3>
-							<p>{ task.Description }</p>
-							<p>id: { fmt.Sprintf("%d", task.ID) }</p>
-						</li>
-					}
-				</ul>
-			}
-		</section>
-
-    		<script>
+templ TaskList(tasks []task_types.Task, streamID string, streams []stream_types.Stream) {
+	<section hx-trigger="refetchTasks from:body" hx-get={ "/get_tasks/" + streamID } hx-swap="innerHTML" id="task-list">
+		if len(tasks) == 0 {
+			<h2>No tasks found</h2>
+		} else {
+			<ul class="grid">
+				for _, task := range tasks {
+					<li
+						class="card"
+						draggable="true"
+					>
+						<dialog class="edit-task-modal" id={ "modal-" + strconv.Itoa(task.ID) }>
+							<div id={ "form-response" + strconv.Itoa(task.ID) }>
+								<!-- Form response will be rendered here -->
+							</div>
+							<h2>Edit Task</h2>
+							<form hx-post={ "/edit_task/" + strconv.Itoa(task.ID) } hx-target={ "#form-response" + strconv.Itoa(task.ID) }>
+								<div class="group">
+									<label for="title">Task Name</label>
+									<input type="text" name="title" placeholder="Title" value={ task.Title }/>
+								</div>
+								<div class="group">
+									<label for="description">Task Description</label>
+									<input name="description" placeholder="Description" value={ task.Description }/>
+								</div>
+								<div class="group">
+									<label for="stream">Stream</label>
+									<select id="stream" name="stream" required>
+										<option value="" disabled>Select a stream</option>
+										for _, stream := range streams {
+											if stream.ID == task.StreamID {
+												<option value={ strconv.Itoa(stream.ID) } selected>{ stream.Title }</option>
+											} else {
+												<option value={ strconv.Itoa(stream.ID) }>{ stream.Title }</option>
+											}
+										}
+									</select>
+								</div>
+								<div class="buttons-wrapper">
+									<button value="cancel" type="button" class="button cancel">Cancel</button>
+									<button type="submit">Update</button>
+								</div>
+							</form>
+						</dialog>
+						<h3>{ task.Title }</h3>
+						<p>{ task.Description }</p>
+						<div class="buttons-wrapper">
+							<button class="cancel" hx-post={ "/delete_task/" + fmt.Sprintf("%d", task.ID) }>Delete</button>
+							<button class="edit-task-button" value={ strconv.Itoa(task.ID) }>Edit</button>
+						</div>
+					</li>
+				}
+			</ul>
+		}
+	</section>
+	<script>
     (() => {
       let selected = null
 
-      const taskWrappers = document.querySelectorAll('.task-wrapper')
+      const editTaskButtons = document.querySelectorAll('.edit-task-button')
+      editTaskButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          console.log(e.target.value)
+          document.querySelector(`#modal-${e.target.value}`).showModal()
+        })
+      })
+
+      const cancelButtons = document.querySelectorAll('.cancel')
+      cancelButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.target.closest('.edit-task-modal').close()
+        })
+      })
+
+      const taskWrappers = document.querySelectorAll('.card')
       taskWrappers.forEach(wrapper => {
         wrapper.addEventListener('dragover', dragOver)
         wrapper.addEventListener('dragstart', dragStart)
@@ -58,7 +92,7 @@ templ TaskList(tasks []task_types.Task) {
       })
       function dragOver(e) {
         e.preventDefault();
-        if (e.target.classList.contains('task-wrapper') && e.target !== selected) {
+        if (e.target.classList.contains('card') && e.target !== selected) {
           if (isBefore(selected, e.target)) {
             e.target.parentNode.insertBefore(selected, e.target);
           } else {
@@ -81,13 +115,13 @@ templ TaskList(tasks []task_types.Task) {
       }
 
       function touchStart(e) {
-        selected = e.target.closest('.task-wrapper');
+        selected = e.target.closest('.card');
       }
 
       function touchMove(e) {
         e.preventDefault();
         const touch = e.touches[0];
-        const target = document.elementFromPoint(touch.clientX, touch.clientY).closest('.task-wrapper');
+        const target = document.elementFromPoint(touch.clientX, touch.clientY).closest('.card');
         if (target && target !== selected) {
           e.target.style.opacity = '0.4'
           if (isBefore(selected, target)) {
@@ -115,4 +149,24 @@ templ TaskList(tasks []task_types.Task) {
       }
     })()
     </script>
+}
+
+templ EditTaskError(message string) {
+	<div class="error-wrapper">
+		<h3>Failed to update task!</h3>
+		<p>{ message }</p>
+	</div>
+}
+
+templ EditTaskSuccess() {
+	<script>
+    (() => {
+      setTimeout(() => {
+        document.querySelector('.edit-task-modal').close()
+      }, 3000)
+    })()
+  </script>
+	<div class="success-wrapper">
+		<h3>Task updated successfully</h3>
+	</div>
 }

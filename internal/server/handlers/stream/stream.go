@@ -135,6 +135,7 @@ func StreamPage(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("something went wrong getting tasks", err)
 	}
 
+	w.Header().Set("Accept-Encoding", "gzip")
 	component := stream_page.StreamPage(true, tasks, title, stream_id_str, streams)
 	component.Render(r.Context(), w)
 }

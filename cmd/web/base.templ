@@ -1,77 +1,440 @@
 package web
 
+func HTML5DocType() templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) (err error) {
+		_, err = io.WriteString(w, "<!DOCTYPE html>")
+		return
+	})
+}
+
 templ Base(isLoggedIn bool) {
-	<style>
+  			<style>
+            /* https://www.joshwcomeau.com/css/custom-css-reset/ */
+          /*
+            1. Use a more-intuitive box-sizing model.
+          */
 
-    :root {
-      --font-main: 'DM Sans', sans-serif;
-    }
-
-    body {
-      font-family: var(--font-main);
-      background-color: var(--tile2);
-    }
-
-    
-    .main {
-      outline: 1px solid var(--tile6);
-      width: min(100%, 1000px);
-      margin-inline: auto;
-      background-color: var(--tile3);
-      height: 100%;
-    }
-
-    .header {
-      margin-inline: auto;
-      border-bottom: 1px solid var(--tile6);
-      padding: 16px 0;
-
-      > nav {
-        display: flex;
-        width: 100%;
-        place-content: end;
-
-        > ul {
-          display: flex;
-          width: fit-content;
-          align-items: center;
-          list-style: none;
-          padding: 0;
-          margin: 0;
-
-          > li {
-            display: inline;
-            margin: 0 10px;
+          *,
+          *::before,
+          *::after {
+            box-sizing: border-box;
           }
-        }
-      }
-    }
 
-  .content {
-    position: relative;
-  }
+
+          /*
+            2. Remove default margin
+          */
+
+          * {
+            margin: 0;
+          }
+
+
+          /*
+            Typographic tweaks!
+            3. Add accessible line-height
+            4. Improve text rendering
+          */
+
+          body {
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+          }
+
+
+          /*
+            5. Improve media defaults
+          */
+
+          img,
+          picture,
+          video,
+          canvas,
+          svg {
+            display: block;
+            max-width: 100%;
+          }
+
+
+          /*
+            6. Remove built-in form typography styles
+          */
+
+          input,
+          button,
+          textarea,
+          select {
+            font: inherit;
+          }
+
+
+          /*
+            7. Avoid text overflows
+          */
+
+          p,
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6 {
+            overflow-wrap: break-word;
+          }
+
+
+          /*
+            8. Create a root stacking context
+          */
+
+          #root,
+          #__next {
+            isolation: isolate;
+          }
+
+          * {
+            --brand-hue: 236;
+            --brand-saturation: 100%;
+            --brand-lightness: 75%;
+            /* Light Theme */
+            --brand-light: hsl(var(--brand-hue) var(--brand-saturation) var(--brand-lightness));
+            --text1-light: hsl(var(--brand-hue) var(--brand-saturation) 10%);
+            --text2-light: hsl(var(--brand-hue) 30% 30%);
+            --text3-light: hsl(var(--brand-hue) 30% 40%);
+            --tile1-light: hsl(var(--brand-hue) 25% 85%);
+            --tile2-light: hsl(var(--brand-hue) 20% 80%);
+            --tile3-light: hsl(var(--brand-hue) 20% 75%);
+            --tile4-light: hsl(var(--brand-hue) 20% 70%);
+            --tile5-light: hsl(var(--brand-hue) 20% 65%);
+            --tile6-light: hsl(var(--brand-hue) 20% 60%);
+            --green-light: hsl(134, 26%, 40%);
+            --red-light: hsl(0, 62%, 71%);
+            --tile-shadow-light: var(--brand-hue) 10% 20%;
+            --shadow-strength-light: .02;
+            /* dim */
+            --brand-dim: hsl( var(--brand-hue) calc(var(--brand-saturation) / 1.25) calc(var(--brand-lightness) / 1.25));
+            --text1-dim: hsl(var(--brand-hue) 15% 75%);
+            --text2-dim: hsl(var(--brand-hue) 10% 61%);
+            --text3-dim: hsl(var(--brand-hue) 10% 50%);
+            --tile1-dim: hsl(var(--brand-hue) 10% 20%);
+            --tile2-dim: hsl(var(--brand-hue) 10% 25%);
+            --tile3-dim: hsl(var(--brand-hue) 5% 30%);
+            --tile4-dim: hsl(var(--brand-hue) 5% 35%);
+            --tile5-dim: hsl(var(--brand-hue) 5% 40%);
+            --tile6-dim: hsl(var(--brand-hue) 5% 45%);
+            --green-dim: hsl(128, 21%, 48%);
+            --red-dim: hsl(0, 36%, 52%);
+            --tile-shadow-dim: var(--brand-hue) 30% 13%;
+            --shadow-strength-dim: .2;
+          }
+
+          :root {
+            color-scheme: light;
+            /* set defaults */
+            --brand: var(--brand-light);
+            --text1: var(--text1-light);
+            --text2: var(--text2-light);
+            --text3: var(--text3-light);
+            --tile1: var(--tile1-light);
+            --tile2: var(--tile2-light);
+            --tile3: var(--tile3-light);
+            --tile4: var(--tile4-light);
+            --tile5: var(--tile5-light);
+            --tile6: var(--tile6-light);
+            --green1: var(--green-light);
+            --red1: var(--red-light);
+            --tile-shadow-light: var(--tile-shadow-light);
+            --shadow-strength: var(--shadow-strength-light);
+            --spacing: 0.35rem;
+            --overlay: var(--spacing) calc(var(--spacing) * -3) var(--spacing) var(--spacing);
+            --size-one: 10px;
+            --size-two: 10px;
+            --font-main: 'DM Sans', sans-serif;
+          }
+
+          [color-scheme="light"] {
+            color-scheme: light;
+            /* set defaults */
+            --brand: var(--brand-light);
+            --text1: var(--text1-light);
+            --text2: var(--text2-light);
+            --text3: var(--text3-light);
+            --tile1: var(--tile1-light);
+            --tile2: var(--tile2-light);
+            --tile3: var(--tile3-light);
+            --tile4: var(--tile4-light);
+            --tile5: var(--tile5-light);
+            --tile6: var(--tile6-light);
+            --green1: var(--green-light);
+            --red1: var(--red-light);
+            --tile-shadow-light: var(--tile-shadow-light);
+            --shadow-strength: var(--shadow-strength-light);
+          }
+
+          [color-scheme="dim"] {
+            color-scheme: dark;
+            --brand: var(--brand-dim);
+            --text1: var(--text1-dim);
+            --text2: var(--text2-dim);
+            --text3: var(--text3-dim);
+            --tile1: var(--tile1-dim);
+            --tile2: var(--tile2-dim);
+            --tile3: var(--tile3-dim);
+            --tile4: var(--tile4-dim);
+            --tile5: var(--tile5-dim);
+            --tile6: var(--tile6-dim);
+            --green1: var(--green-dim);
+            --red1: var(--red-dim);
+            --shadow-strength: var(--shadow-strength-dim);
+          }
+
+
+              body {
+                font-family: var(--font-main);
+                background-color: var(--tile2);
+              }
+
+              
+              .main {
+                outline: 1px solid var(--tile6);
+                width: min(100%, 1000px);
+                margin-inline: auto;
+                background-color: var(--tile3);
+                height: 100%;
+                min-height: 100vh;
+              }
+
+              .header {
+                margin-inline: auto;
+                border-bottom: 1px solid var(--tile6);
+                padding: 16px 0;
+
+                > nav {
+                  display: flex;
+                  width: 100%;
+                  place-content: end;
+
+                  > ul {
+                    display: flex;
+                    width: fit-content;
+                    align-items: center;
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+
+                    > li {
+                      display: inline;
+                      margin: 0 8px;
+                    }
+                  }
+                }
+              }
+
+            .content {
+              position: relative;
+            }
+
+            @view-transition {
+            navigation: auto;
+          }
+
+
+          /* Old stuff going out */
+
+          ::view-transition-old(hero) {
+            animation: fade 5.2s linear forwards;
+          }
+
+
+          /* New stuff coming in */
+
+          ::view-transition-new(hero) {
+            animation: fade 5.3s linear reverse;
+          }
+
+          .buttons-wrapper {
+            margin-top: 1rem;
+            width: 100%;
+            display: flex;
+            gap: 8px;
+            flex-direction: row;
+            max-width: 300px;
+          }
+
+          button {
+            cursor: pointer;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            flex: 1;
+            font-weight: bold;
+            outline: none;
+            color: var(--text1);
+            background-color: var(--tile2);
+            border: 2px solid var(--tile6);
+            transition: background-color 0.3s;
+            white-space: nowrap;
+            &:hover {
+              background-color: var(--tile3);
+            }
+          }
+
+          .cancel {
+            border: 2px solid var(--red1);
+          }
+
+          .positive {
+            border: 2px solid var(--green1);
+          }
+
+          a {
+            color: var(--text1);
+            text-decoration: underline;
+            transition: color 0.2s;
+            &:hover {
+              color: var(--text2);
+            }
+          }
+
+          h2 {
+            margin: 0.5rem 0;
+            color: var(--text1);
+            font-size: 1.25rem;
+            font-weight: bold;
+          }
+
+          form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            >.group {
+              width: 100%;
+              display: flex;
+              flex-direction: column;
+              color: var(--text1);
+              >label {
+                margin-bottom: 5px;
+                color: var(--text1);
+              }
+              >input,
+              >textarea {
+                border-radius: 4px;
+                resize: none;
+                padding: 5px;
+                border: 1px solid var(--tile3);
+                background-color: var(--tile5);
+              }
+            }
+          }
+
+          dialog {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(500px, 100%);
+            background-color: var(--tile3);
+            border: 2px solid var(--tile2);
+            border-radius: 16px;
+          }
+
+          .error-wrapper {
+            display: flex;
+            justify-content: start;
+            flex-direction: column;
+            width: 100%;
+            padding: 8px;
+            text-align: left;
+            background-color: var(--red1);
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            >h3 {
+              font-size: 1.25rem;
+              color: var(--text1);
+            }
+            >p {
+              font-size: 1rem;
+              color: var(--text1);
+            }
+          }
+
+          .success-wrapper {
+            display: flex;
+            justify-content: start;
+            flex-direction: column;
+            width: 100%;
+            padding: 8px;
+            text-align: left;
+            background-color: var(--green1);
+            >h3 {
+              font-size: 1.25rem;
+              color: var(--text1);
+            }
+            >p {
+              font-size: 1rem;
+              color: var(--text1);
+            }
+          }
+
+          .grid {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            flex-direction: column;
+          }
+
+          .card {
+            padding: 1rem;
+            background-color: var(--tile2);
+            border: 2px solid var(--tile4);
+            border-radius: 0.5rem;
+            cursor: move;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            color: var(--text1);
+          }
+
+          .auth-wrapper {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            width: min(400px, 100%);
+            margin-inline: auto;
+            margin-top: 2rem;
+            background-color: var(--tile4);
+            border-radius: 4px;
+            border: 2px solid var(--tile2);
+            >form {
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              padding: 8px;
+            }
+          }
   </style>
-	<!DOCTYPE html>
-	<html lang="en">
+	<html lang="en" dir="ltr">
 		<head>
-			<meta charset="utf-8"/>
-      <meta name="view-transition" content="same-origin" />
+			<meta charset="UTF-8"/>
+			<meta name="view-transition" content="same-origin"/>
+			<meta name="description" content="Life streams"/>
 			<title>Life streams</title>
-			<script src="/assets/js/htmx.min.js"></script>
+			<script defer src="https://unpkg.com/htmx.org@2.0.0"></script>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
 			<link rel="preconnect" href="https://fonts.googleapis.com"/>
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-			<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet"/>
-			<link rel="stylesheet" href="/assets/css/reset.css"/>
+			<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
 		</head>
 		<body>
 			<main class="main">
 				<header class="header">
 					<nav>
 						<ul>
-							<li class="theme-toggle-wrapper"></li>
 							if isLoggedIn {
-								<li><a href="/dashboard">dashboard</a></li>
+								<li><a href="/dashboard">Streams</a></li>
+								<li class="theme-toggle-wrapper"></li>
 								<li>
 									<form action="/logout" method="POST">
 										<button type="submit">Logout</button>
@@ -80,7 +443,8 @@ templ Base(isLoggedIn bool) {
 							} else {
 								<li><a href="/">Home</a></li>
 								<li><a href="/login">Login</a></li>
-								<li><a href="/signup">sign up</a></li>
+								<li><a href="/signup">Sign Up</a></li>
+								<li class="theme-toggle-wrapper"></li>
 							}
 						</ul>
 					</nav>
@@ -89,6 +453,7 @@ templ Base(isLoggedIn bool) {
 					{ children... }
 				</div>
 			</main>
+
 			<script>
         const body = document.querySelector('body');
         const colorSchemeFromLocalStorage = localStorage.getItem('color-scheme');

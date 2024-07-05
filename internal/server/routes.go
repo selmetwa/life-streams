@@ -99,6 +99,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	mux.HandleFunc("/get_tasks/{id}", task_handler.RenderTaskList)
 	mux.HandleFunc("/create_task", task_handler.CreateTask)
+	mux.HandleFunc("/delete_task/{id}", task_handler.DeleteTask)
+	mux.HandleFunc("/edit_task/{id}", task_handler.EditTask)
 	return mux
 }
 

@@ -25,7 +25,7 @@ func CreateStreamModal() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    dialog {\n      position: absolute;\n      top: 50%;\n      left: 50%;\n      transform: translate(-50%, -50%);\n      width: min(500px, 100%);\n      background-color: var(--tile4);\n      border: 1px solid var(--tile1);\n\n      > h2 {\n        margin: 0;\n        color: var(--text1);\n        font-size: 1.25rem;\n        font-weight: bold;\n      }\n      > form {\n        display: flex;\n        flex-direction: column;\n        gap: 10px;\n\n        > .group {\n          width: 100%;\n          display: flex;\n          flex-direction: column;\n          color: var(--text1);\n\n          > label {\n            margin-bottom: 5px;\n            color: var(--text1);\n          }\n\n          > textarea {\n            resize: none;\n            padding: 5px;\n            border: 1px solid var(--tile3);\n            background-color: var(--tile5);\n          }\n        }\n\n        > .buttons {\n          margin-top: 8px;\n          width: 100%;\n          display: flex;\n          flex-direction: row;\n          gap: 4px;\n\n          > .button {\n            padding: 5px 10px;\n            border: none;\n            border-radius: 5px;\n            cursor: pointer;\n            flex: 1;\n        }\n\n        > .cancel {\n            background-color: var(--tile2);\n            color: var(--red1);\n            font-weight: bold;\n        }\n      }\n    }\n  </style><dialog class=\"dialog\"><div id=\"form-response\"><!-- Form response will be rendered here --></div><h2>Create Stream</h2><form hx-post=\"/create_stream\" hx-target=\"#form-response\" method=\"POST\" class=\"form\"><div class=\"group\"><label for=\"title\">Stream Name</label> <input type=\"text\" id=\"title\" name=\"title\" required></div><div class=\"group\"><label for=\"description\">Description</label> <textarea id=\"description\" name=\"description\" required></textarea></div><div class=\"buttons\"><button value=\"cancel\" type=\"button\" class=\"button cancel\">Cancel</button> <button type=\"submit\" class=\"button submit\">Submit</button></div></form></dialog> <button class=\"show-button\">Create Stream</button><script>\n  (() => {\n    const showButton = document.querySelector(\".show-button\");\n    const favDialog = document.querySelector(\".dialog\");\n\n    document.querySelector(\".cancel\").addEventListener(\"click\", () => {\n      document.querySelector(\".form\").reset();\n      const formResponse = document.querySelector(\"#form-response\");\n      formResponse.innerHTML = \"\";\n      favDialog.close();\n    });\n    showButton.addEventListener(\"click\", () => {\n      favDialog.showModal();\n    });\n  })()\n  </script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<dialog class=\"dialog\"><div id=\"form-response\"><!-- Form response will be rendered here --></div><h2>Create Stream</h2><form hx-post=\"/create_stream\" hx-target=\"#form-response\" method=\"POST\" class=\"form\"><div class=\"group\"><label for=\"title\">Stream Name</label> <input type=\"text\" id=\"title\" name=\"title\" required></div><div class=\"group\"><label for=\"description\">Description</label> <textarea id=\"description\" name=\"description\" required></textarea></div><div class=\"buttons-wrapper\"><button value=\"cancel\" type=\"button\" class=\"button cancel\">Cancel</button> <button type=\"submit\" class=\"button submit\">Submit</button></div></form></dialog> <button class=\"show-button positive\">Create Stream</button><script>\n  (() => {\n    const showButton = document.querySelector(\".show-button\");\n    const favDialog = document.querySelector(\".dialog\");\n\n    document.querySelector(\".cancel\").addEventListener(\"click\", () => {\n      document.querySelector(\".form\").reset();\n      const formResponse = document.querySelector(\"#form-response\");\n      formResponse.innerHTML = \"\";\n      favDialog.close();\n    });\n    showButton.addEventListener(\"click\", () => {\n      favDialog.showModal();\n    });\n  })()\n  </script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -49,14 +49,14 @@ func CreateStreamError(message string) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    .error-wrapper {\n      display: flex;\n      justify-content: start;\n      flex-direction: column;\n      width: 100%;\n      padding: 12px;\n      text-align: left;\n      background-color: var(--red1);\n\n      > h2 {\n        font-size: 1.25rem;\n        color: var(--text1);\n      }\n\n      > p {\n        font-size: 1rem;\n        color: var(--text1);\n      }\n    }\n  </style><div class=\"error-wrapper\"><h2>Failed to create stream!</h2><p>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"error-wrapper\"><h3>Failed to create stream!</h3><p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/create_stream_modal/create_stream_modal.templ`, Line: 133, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/create_stream_modal/create_stream_modal.templ`, Line: 48, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -88,7 +88,7 @@ func CreateStreamSuccess(stream stream_types.Stream) templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    .success-wrapper {\n      display: flex;\n      justify-content: start;\n      flex-direction: column;\n      width: 100%;\n      padding: 12px;\n      text-align: left;\n      background-color: var(--green1);\n\n      > h2 {\n        font-size: 1.25rem;\n        color: var(--text1);\n      }\n    }\n  </style><script>\n    let form = document.querySelector('.form');\n    form.reset();\n    let dialog = document.querySelector('.dialog');\n    setTimeout(() => {\n      dialog.close();\n    }, 3000)\n  </script><div class=\"success-wrapper\"><h2>Stream created successfully</h2></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n    let form = document.querySelector('.form');\n    form.reset();\n    let dialog = document.querySelector('.dialog');\n    setTimeout(() => {\n      dialog.close();\n    }, 3000)\n  </script><div class=\"success-wrapper\"><h3>Stream created successfully</h3></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

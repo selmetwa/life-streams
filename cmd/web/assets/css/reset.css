@@ -98,7 +98,7 @@ h6 {
   --tile4-light: hsl(var(--brand-hue) 20% 70%);
   --tile5-light: hsl(var(--brand-hue) 20% 65%);
   --tile6-light: hsl(var(--brand-hue) 20% 60%);
-  --green-light: hsl(133 20% 70%);
+  --green-light: hsl(134, 26%, 40%);
   --red-light: hsl(0, 62%, 71%);
   --tile-shadow-light: var(--brand-hue) 10% 20%;
   --shadow-strength-light: .02;
@@ -113,7 +113,7 @@ h6 {
   --tile4-dim: hsl(var(--brand-hue) 5% 35%);
   --tile5-dim: hsl(var(--brand-hue) 5% 40%);
   --tile6-dim: hsl(var(--brand-hue) 5% 45%);
-  --green-dim: hsl(125 5% 35%);
+  --green-dim: hsl(128, 21%, 48%);
   --red-dim: hsl(0, 36%, 52%);
   --tile-shadow-dim: var(--brand-hue) 30% 13%;
   --shadow-strength-dim: .2;
@@ -176,22 +176,4 @@ h6 {
   --green1: var(--green-dim);
   --red1: var(--red-dim);
   --shadow-strength: var(--shadow-strength-dim);
-}
-
-@view-transition {
-  navigation: auto;
-}
-
-
-/* Old stuff going out */
-
-::view-transition-old(hero) {
-  animation: fade 5.2s linear forwards;
-}
-
-
-/* New stuff coming in */
-
-::view-transition-new(hero) {
-  animation: fade 5.3s linear reverse;
 }

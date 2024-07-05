@@ -3,41 +3,29 @@ package web
 import (
 	"life-streams/cmd/web"
 	task_types "life-streams/internal/server/handlers/tasks/types"
-  stream_types "life-streams/internal/server/handlers/stream/types"
+	stream_types "life-streams/internal/server/handlers/stream/types"
 	task_list "life-streams/cmd/web/components/task_list"
-  	create_task_modal "life-streams/cmd/web/components/create_task_modal"
+	create_task_modal "life-streams/cmd/web/components/create_task_modal"
 )
 
 templ StreamPage(
-  isLoggedin bool, 
-  tasks []task_types.Task, 
-  title string, 
-  streamID string,
-  streams []stream_types.Stream,
+	isLoggedin bool,
+	tasks []task_types.Task,
+	title string,
+	streamID string,
+	streams []stream_types.Stream,
 ) {
+  <!DOCTYPE html>
+
 	<style>
     .stream-page-wrapper {
       padding: 2rem;
       position: relative;
-  
-      > h2 {  
-        margin: 1rem 0;
-        color: var(--text1);
-        font-size: 1.25rem;
-        font-weight: bold;
-      }
     }
 
     .stream-header {
       margin-bottom: 1rem;
 
-      > h2 {
-        margin: 1rem 0;
-        color: var(--text1);
-        font-size: 1.25rem;
-        font-weight: bold;
-      }
-
       > div {
         display: flex;
         flex-direction: row;
@@ -45,50 +33,39 @@ templ StreamPage(
       }
     }
 
-    .delete-stream-dialog {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(500px, 100%);
-      background-color: var(--tile4);
-      border: 1px solid var(--tile1);
+    .buttons-wrapper {
+      > form {
+        flex: 1;
 
-      > div {
-        width: 100%;
-        margin-top: 1rem;
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
+        > button {
+          width: 100%;
+        }
       }
     }
   </style>
 	@web.Base(isLoggedin) {
 		<section class="stream-page-wrapper">
 			<dialog class="delete-stream-dialog">
-      	<div id="delete-stream-response">
-          <!-- Form response will be rendered here -->
-        </div>
-				<p>Are you sure you want to delete this stream</p>
-        <div>
-          <button class="close-delete-dialog">Close</button>
-          <form hx-post="/delete_stream" hx-target="#delete-stream-response">
-            <input type="hidden" name="streamID" value={streamID}>
-            <button class="confirm-delete" type="submit">Delete</button>
-          </form>
-        </div>
+				<div id="delete-stream-response">
+					<!-- Form response will be rendered here -->
+				</div>
+				<h2>Are you sure you want to delete this stream</h2>
+				<div class="buttons-wrapper">
+					<button class="close-delete-dialog">Close</button>
+					<form hx-post="/delete_stream" hx-target="#delete-stream-response">
+						<input type="hidden" name="streamID" value={ streamID }/>
+						<button class="confirm-delete cancel" type="submit">Delete</button>
+					</form>
+				</div>
 			</dialog>
-
 			<header class="stream-header">
 				<h2>{ title }</h2>
-        <div>
-          <button class="open-delete-modal">Delete</button>
-			    @create_task_modal.CreateTaskModal(streams, streamID)
-        </div>
+				<div class="buttons-wrapper">
+					<button class="open-delete-modal cancel">Delete</button>
+					@create_task_modal.CreateTaskModal(streams, streamID)
+				</div>
 			</header>
-      <div hx-trigger="refetchTasks from:body" hx-get={"/get_tasks/" + streamID} hx-swap="innerHTML" id="task-list">
-			  @task_list.TaskList(tasks)
-      </div>
+			@task_list.TaskList(tasks, streamID, streams)
 		</section>
 	}
 	<script>
@@ -114,64 +91,20 @@ templ StreamPage(
 }
 
 templ DeleteStreamError() {
-	<style>
-    .error-wrapper {
-      display: flex;
-      justify-content: start;
-      flex-direction: column;
-      width: 100%;
-      padding: 12px;
-      text-align: left;
-      background-color: var(--red1);
-      margin-bottom: 1rem;
-
-      > h2 {
-        font-size: 1.25rem;
-        color: var(--text1);
-      }
-
-      > p {
-        font-size: 1rem;
-        color: var(--text1);
-      }
-    }
-  </style>
 	<div class="error-wrapper">
-		<h2>Deletion failed</h2>
+		<h3>Deletion failed</h3>
 		<p>Something went wrong</p>
 	</div>
 }
 
 templ DeleteStreamSuccess() {
-  	<style>
-    .success-wrapper {
-      display: flex;
-      justify-content: start;
-      flex-direction: column;
-      width: 100%;
-      padding: 12px;
-      text-align: left;
-      background-color: var(--green1);
-      margin-bottom: 1rem;
-
-      > h2 {
-        font-size: 1.25rem;
-        color: var(--text1);
-      }
-
-      > p {
-        font-size: 1rem;
-        color: var(--text1);
-      }
-    }
-  </style>
-  	<script>
+	<script>
     setTimeout(() => {
       window.location.href = '/dashboard'
     }, 3000)
   </script>
 	<div class="success-wrapper">
-		<h2>Stream deleted successfully</h2>
+		<h3>Stream deleted successfully</h3>
 		<p>Redirecting to dashboard...</p>
 	</div>
 }

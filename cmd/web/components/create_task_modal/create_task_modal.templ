@@ -1,123 +1,56 @@
 package web
 
 import (
-  stream_types "life-streams/internal/server/handlers/stream/types"
-  "strconv"
-  )
+	stream_types "life-streams/internal/server/handlers/stream/types"
+	"strconv"
+)
 
 templ CreateTaskModal(streams []stream_types.Stream, streamID string) {
-	<style>
-    dialog {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(500px, 100%);
-      background-color: var(--tile4);
-      border: 1px solid var(--tile1);
-
-      > h2 {
-        margin: 0;
-        color: var(--text1);
-        font-size: 1.25rem;
-        font-weight: bold;
-      }
-      > form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-
-        > .group {
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          color: var(--text1);
-
-          > label {
-            margin-bottom: 5px;
-            color: var(--text1);
-          }
-
-          > textarea {
-            resize: none;
-            padding: 5px;
-            border: 1px solid var(--tile3);
-            background-color: var(--tile5);
-          }
-        }
-
-        > .buttons {
-          margin-top: 8px;
-          width: 100%;
-          display: flex;
-          flex-direction: row;
-          gap: 4px;
-
-          > .button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        > .task-cancel {
-            background-color: var(--tile2);
-            color: var(--red1);
-            font-weight: bold;
-        }
-      }
-    }
-  </style>
-		<dialog class="task-modal-dialog">
-      <div id="task-modal-form-response">
-        <!-- Form response will be rendered here -->
-      </div>
-      <h2>Create Task</h2>
-			<form hx-post="/create_task" hx-target="#task-modal-form-response" method="POST" class="task-form">
+	<dialog class="task-modal-dialog">
+		<div id="task-modal-form-response">
+			<!-- Form response will be rendered here -->
+		</div>
+		<h2>Create Task</h2>
+		<form hx-post="/create_task" hx-target="#task-modal-form-response" method="POST" class="task-form">
+			<div class="group">
+				<label for="title">Task Name</label>
+				<input type="text" id="title" name="title" required/>
+			</div>
+			<div class="group">
+				<label for="description">Description</label>
+				<textarea id="description" name="description" required></textarea>
+			</div>
+			if streamID != "" {
+				<input type="hidden" name="stream" value={ streamID }/>
+			} else {
 				<div class="group">
-					<label for="title">Task Name</label>
-					<input type="text" id="title" name="title" required/>
+					<label for="stream">Stream</label>
+					<select id="stream" name="stream" required>
+						<option value="" disabled selected>Select a stream</option>
+						for _, stream := range streams {
+							<option value={ strconv.Itoa(stream.ID) }>{ stream.Title }</option>
+						}
+					</select>
 				</div>
-				<div class="group">
-					<label for="description">Description</label>
-					<textarea id="description" name="description" required></textarea>
-				</div>
-        
-        if streamID != "" {
-          <input type="hidden" name="stream" value={ streamID } />
-        } else {
-          <div class="group">
-            <label for="stream">Stream</label>
-            <select id="stream" name="stream" required>
-              <option value="" disabled selected>Select a stream</option>
-                for _, stream := range streams {
-                  <option value={ strconv.Itoa(stream.ID) }>{stream.Title}</option>
-                }
-            </select>
-          </div>
-        }
-
-				<div class="buttons">
-					<button value="cancel" type="button" class="button task-cancel">Cancel</button>
-					<button type="submit" class="button submit">Submit</button>
-				</div>
-			</form>
-		</dialog>
-		<button class="show-task-modal-button">Create Task</button>
+			}
+			<div class="buttons-wrapper">
+				<button type="button" class="cancel close-create-task-modal">Cancel</button>
+				<button type="submit" class="button submit">Submit</button>
+			</div>
+		</form>
+	</dialog>
+	<button class="show-task-modal-button positive">Create Task</button>
 	<script>
     (() => {
-      console.log("Create Task Modal Loaded");
       const showTaskModalButton = document.querySelector(".show-task-modal-button");
       const taskModalDialog = document.querySelector(".task-modal-dialog");
 
-      // "Cancel" button closes the <dialog>
-      document.querySelector(".task-cancel").addEventListener("click", () => {
+      document.querySelector('.close-create-task-modal').addEventListener('click', () => {
         document.querySelector(".task-form").reset();
         document.querySelector("#task-modal-form-response").innerHTML = "";
         taskModalDialog.close();
-      });
-      // "Show the dialog" button opens the <dialog> modally
+      })
+
       showTaskModalButton.addEventListener("click", () => {
         taskModalDialog.showModal();
       });
@@ -126,29 +59,8 @@ templ CreateTaskModal(streams []stream_types.Stream, streamID string) {
 }
 
 templ CreateTaskError(message string) {
-	<style>
-    .error-wrapper {
-      display: flex;
-      justify-content: start;
-      flex-direction: column;
-      width: 100%;
-      padding: 12px;
-      text-align: left;
-      background-color: var(--red1);
-
-      > h2 {
-        font-size: 1.25rem;
-        color: var(--text1);
-      }
-
-      > p {
-        font-size: 1rem;
-        color: var(--text1);
-      }
-    }
-  </style>
 	<div class="error-wrapper">
-		<h2>Failed to create task!</h2>
+		<h3>Failed to create task!</h3>
 		<p>{ message }</p>
 	</div>
 }
@@ -156,23 +68,7 @@ templ CreateTaskError(message string) {
 var helloHandle = templ.NewOnceHandle()
 
 templ CreateTaskSuccess() {
-	<style>
-    .success-wrapper {
-      display: flex;
-      justify-content: start;
-      flex-direction: column;
-      width: 100%;
-      padding: 12px;
-      text-align: left;
-      background-color: var(--green1);
-
-      > h2 {
-        font-size: 1.25rem;
-        color: var(--text1);
-      }
-    }
-  </style>
-  <script>
+	<script>
     (() => {
       let form = document.querySelector('.task-form');
       form.reset();
@@ -183,6 +79,6 @@ templ CreateTaskSuccess() {
     })()
   </script>
 	<div class="success-wrapper">
-		<h2>Task created successfully</h2>
+		<h3>Task created successfully</h3>
 	</div>
 }

@@ -1,9 +1,20 @@
 package web
+
 import "life-streams/cmd/web"
 
 templ IndexPage(isLoggedIn bool) {
-  @web.Base(isLoggedIn) {
-    <h1>Home Page</h1>
-    <p>Please log in</p>
-  }
+  <!DOCTYPE html>
+	@web.Base(isLoggedIn) {
+
+    <style>
+      .auth-wrapper {
+        padding: 20px;
+        color: var(--text1);
+      }
+    </style>
+    <div class="auth-wrapper">
+    		<h1>You are logged out</h1>
+		    <p>Please log in</p>
+    </div>
+	}
 }

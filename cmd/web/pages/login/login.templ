@@ -3,6 +3,8 @@ package web
 import "life-streams/cmd/web"
 
 templ LoginPage(isLoggedIn bool) {
+  <!DOCTYPE html>
+
 	<style>
   .wrapper {
       display: flex;
@@ -19,39 +21,7 @@ templ LoginPage(isLoggedIn bool) {
       display: flex;
       flex-direction: column; 
       width: 100%;
-      padding: 12px;
-
-      >h1 {
-        margin-bottom: 10px;
-        color: var(--text1);
-      }
-
-      .group {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-
-        > label {
-          margin-bottom: 5px;
-          color: var(--text1);
-        }
-      }
-
-      .button {
-        margin-top: 10px;
-        padding: 5px 10px;
-        background-color: var(--tile5);
-        color: var(--text1);
-        border: none;
-        width: 100%;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-
-        &:hover {
-          background-color: var(--tile6);
-        }
-      }
+      padding: 8;
 
       > a {
         margin-top: 10px;
@@ -66,12 +36,12 @@ templ LoginPage(isLoggedIn bool) {
 
   </style>
 	@web.Base(isLoggedIn) {
-		<section class="wrapper">
+		<section class="auth-wrapper">
 			<div id="form-response">
 				<!-- Form response will be rendered here -->
 			</div>
-			<form hx-post="/login_post" method="POST" hx-target="#form-response" class="form">
-				<h1>Log In</h1>
+			<form hx-post="/login_post" method="POST" hx-target="#form-response">
+				<h2>Log In</h2>
 				<div class="group">
 					<label for="email">Email:</label>
 					<input type="email" id="email" name="email" required/>
@@ -88,27 +58,6 @@ templ LoginPage(isLoggedIn bool) {
 }
 
 templ LoginFailure(message string) {
-	<style>
-    .error-wrapper {
-      display: flex;
-      justify-content: start;
-      flex-direction: column;
-      width: 100%;
-      padding: 12px;
-      text-align: left;
-      background-color: var(--red1);
-
-      > h2 {
-        font-size: 1.25rem;
-        color: var(--text1);
-      }
-
-      > p {
-        font-size: 1rem;
-        color: var(--text1);
-      }
-    }
-  </style>
 	<div class="error-wrapper">
 		<h2>Failed to log in!</h2>
 		<p>{ message }</p>

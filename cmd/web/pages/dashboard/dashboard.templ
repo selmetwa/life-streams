@@ -3,12 +3,13 @@ package web
 import (
 	"life-streams/cmd/web"
 
-  streams_list "life-streams/cmd/web/components/streams_list"
-  stream_types "life-streams/internal/server/handlers/stream/types"
+	streams_list "life-streams/cmd/web/components/streams_list"
+	stream_types "life-streams/internal/server/handlers/stream/types"
 )
 
 templ Dashboard(isLoggedIn bool, streams []stream_types.Stream) {
-  <style>
+  <!DOCTYPE html>
+	<style>
     .wrapper {
       padding: 2rem;
 
@@ -24,7 +25,7 @@ templ Dashboard(isLoggedIn bool, streams []stream_types.Stream) {
   </style>
 	@web.Base(isLoggedIn) {
 		<section class="wrapper" hx-trigger="refetchStreamList from:body" hx-get="/get_streams" hx-swap="innerHTML" id="stream-list">
-      @streams_list.StreamsList(streams)
+			@streams_list.StreamsList(streams)
 		</section>
 	}
 }

@@ -2,92 +2,28 @@ package web
 
 import stream_types "life-streams/internal/server/handlers/stream/types"
 
-
 templ CreateStreamModal() {
-	<style>
-    dialog {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(500px, 100%);
-      background-color: var(--tile4);
-      border: 1px solid var(--tile1);
-
-      > h2 {
-        margin: 0;
-        color: var(--text1);
-        font-size: 1.25rem;
-        font-weight: bold;
-      }
-      > form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-
-        > .group {
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          color: var(--text1);
-
-          > label {
-            margin-bottom: 5px;
-            color: var(--text1);
-          }
-
-          > textarea {
-            resize: none;
-            padding: 5px;
-            border: 1px solid var(--tile3);
-            background-color: var(--tile5);
-          }
-        }
-
-        > .buttons {
-          margin-top: 8px;
-          width: 100%;
-          display: flex;
-          flex-direction: row;
-          gap: 4px;
-
-          > .button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        > .cancel {
-            background-color: var(--tile2);
-            color: var(--red1);
-            font-weight: bold;
-        }
-      }
-    }
-  </style>
-		<dialog class="dialog">
-      <div id="form-response">
-        <!-- Form response will be rendered here -->
-      </div>
-      <h2>Create Stream</h2>
-			<form hx-post="/create_stream" hx-target="#form-response" method="POST" class="form">
-				<div class="group">
-					<label for="title">Stream Name</label>
-					<input type="text" id="title" name="title" required/>
-				</div>
-				<div class="group">
-					<label for="description">Description</label>
-					<textarea id="description" name="description" required></textarea>
-				</div>
-				<div class="buttons">
-					<button value="cancel" type="button" class="button cancel">Cancel</button>
-					<button type="submit" class="button submit">Submit</button>
-				</div>
-			</form>
-		</dialog>
-		<button class="show-button">Create Stream</button>
+	<dialog class="dialog">
+		<div id="form-response">
+			<!-- Form response will be rendered here -->
+		</div>
+		<h2>Create Stream</h2>
+		<form hx-post="/create_stream" hx-target="#form-response" method="POST" class="form">
+			<div class="group">
+				<label for="title">Stream Name</label>
+				<input type="text" id="title" name="title" required/>
+			</div>
+			<div class="group">
+				<label for="description">Description</label>
+				<textarea id="description" name="description" required></textarea>
+			</div>
+			<div class="buttons-wrapper">
+				<button value="cancel" type="button" class="button cancel">Cancel</button>
+				<button type="submit" class="button submit">Submit</button>
+			</div>
+		</form>
+	</dialog>
+	<button class="show-button positive">Create Stream</button>
 	<script>
   (() => {
     const showButton = document.querySelector(".show-button");
@@ -107,29 +43,8 @@ templ CreateStreamModal() {
 }
 
 templ CreateStreamError(message string) {
-	<style>
-    .error-wrapper {
-      display: flex;
-      justify-content: start;
-      flex-direction: column;
-      width: 100%;
-      padding: 12px;
-      text-align: left;
-      background-color: var(--red1);
-
-      > h2 {
-        font-size: 1.25rem;
-        color: var(--text1);
-      }
-
-      > p {
-        font-size: 1rem;
-        color: var(--text1);
-      }
-    }
-  </style>
 	<div class="error-wrapper">
-		<h2>Failed to create stream!</h2>
+		<h3>Failed to create stream!</h3>
 		<p>{ message }</p>
 	</div>
 }
@@ -137,23 +52,7 @@ templ CreateStreamError(message string) {
 var helloHandle = templ.NewOnceHandle()
 
 templ CreateStreamSuccess(stream stream_types.Stream) {
-	<style>
-    .success-wrapper {
-      display: flex;
-      justify-content: start;
-      flex-direction: column;
-      width: 100%;
-      padding: 12px;
-      text-align: left;
-      background-color: var(--green1);
-
-      > h2 {
-        font-size: 1.25rem;
-        color: var(--text1);
-      }
-    }
-  </style>
-  <script>
+	<script>
     let form = document.querySelector('.form');
     form.reset();
     let dialog = document.querySelector('.dialog');
@@ -162,6 +61,6 @@ templ CreateStreamSuccess(stream stream_types.Stream) {
     }, 3000)
   </script>
 	<div class="success-wrapper">
-		<h2>Stream created successfully</h2>
+		<h3>Stream created successfully</h3>
 	</div>
 }

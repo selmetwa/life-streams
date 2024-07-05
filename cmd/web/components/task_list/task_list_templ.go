@@ -12,10 +12,12 @@ import "bytes"
 
 import (
 	"fmt"
+	stream_types "life-streams/internal/server/handlers/stream/types"
 	task_types "life-streams/internal/server/handlers/tasks/types"
+	"strconv"
 )
 
-func TaskList(tasks []task_types.Task) templ.Component {
+func TaskList(tasks []task_types.Task, streamID string, streams []stream_types.Stream) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -28,31 +30,191 @@ func TaskList(tasks []task_types.Task) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n      .tasks-list {\n        list-style-type: none;\n        padding: 0;\n        display: grid;\n        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));\n        gap: 10px;\n        flex-direction: column;\n      }\n      .task-wrapper {\n        padding: 1rem;\n        background-color: var(--tile5);\n        border: 1px solid var(--tile6);\n        border-radius: 0.5rem;\n        cursor: move;\n        color: var(--text1);\n      }\n  </style><section>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section hx-trigger=\"refetchTasks from:body\" hx-get=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs("/get_tasks/" + streamID)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 11, Col: 79}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-swap=\"innerHTML\" id=\"task-list\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if len(tasks) == 0 {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"empty\">No tasks found</p>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h2>No tasks found</h2>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"tasks-list\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"grid\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, task := range tasks {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"task-wrapper\" draggable=\"true\"><h3>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"card\" draggable=\"true\"><dialog class=\"edit-task-modal\" id=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var2 string
-				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(task.Title)
+				var templ_7745c5c3_Var3 string
+				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs("modal-" + strconv.Itoa(task.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 37, Col: 23}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 21, Col: 75}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div id=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var4 string
+				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs("form-response" + strconv.Itoa(task.ID))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 22, Col: 56}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><!-- Form response will be rendered here --></div><h2>Edit Task</h2><form hx-post=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var5 string
+				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("/edit_task/" + strconv.Itoa(task.ID))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 26, Col: 60}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var6 string
+				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs("#form-response" + strconv.Itoa(task.ID))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 26, Col: 115}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div class=\"group\"><label for=\"title\">Task Name</label> <input type=\"text\" name=\"title\" placeholder=\"Title\" value=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var7 string
+				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(task.Title)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 29, Col: 79}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div><div class=\"group\"><label for=\"description\">Task Description</label> <input name=\"description\" placeholder=\"Description\" value=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var8 string
+				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(task.Description)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 33, Col: 85}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div><div class=\"group\"><label for=\"stream\">Stream</label> <select id=\"stream\" name=\"stream\" required><option value=\"\" disabled>Select a stream</option> ")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				for _, stream := range streams {
+					if stream.ID == task.StreamID {
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<option value=\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var9 string
+						templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(stream.ID))
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 41, Col: 51}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" selected>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var10 string
+						templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(stream.Title)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 41, Col: 77}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</option>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					} else {
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<option value=\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var11 string
+						templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(stream.ID))
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 43, Col: 51}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var12 string
+						templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(stream.Title)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 43, Col: 68}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</option>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select></div><div class=\"buttons-wrapper\"><button value=\"cancel\" type=\"button\" class=\"button cancel\">Cancel</button> <button type=\"submit\">Update</button></div></form></dialog><h3>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var13 string
+				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(task.Title)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 54, Col: 22}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -60,29 +222,42 @@ func TaskList(tasks []task_types.Task) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var3 string
-				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(task.Description)
+				var templ_7745c5c3_Var14 string
+				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(task.Description)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 38, Col: 28}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 55, Col: 27}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p>id: ")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var4 string
-				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", task.ID))
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 39, Col: 42}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"buttons-wrapper\"><button class=\"cancel\" hx-post=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></li>")
+				var templ_7745c5c3_Var15 string
+				templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs("/delete_task/" + fmt.Sprintf("%d", task.ID))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 57, Col: 84}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Delete</button> <button class=\"edit-task-button\" value=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var16 string
+				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(task.ID))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 58, Col: 69}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Edit</button></div></li>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -92,7 +267,68 @@ func TaskList(tasks []task_types.Task) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</section><script>\n    (() => {\n      let selected = null\n\n      const taskWrappers = document.querySelectorAll('.task-wrapper')\n      taskWrappers.forEach(wrapper => {\n        wrapper.addEventListener('dragover', dragOver)\n        wrapper.addEventListener('dragstart', dragStart)\n        wrapper.addEventListener('dragend', dragEnd)\n        wrapper.addEventListener('touchstart', touchStart)\n        wrapper.addEventListener('touchmove', touchMove)\n        wrapper.addEventListener('touchend', touchEnd)\n      })\n      function dragOver(e) {\n        e.preventDefault();\n        if (e.target.classList.contains('task-wrapper') && e.target !== selected) {\n          if (isBefore(selected, e.target)) {\n            e.target.parentNode.insertBefore(selected, e.target);\n          } else {\n            e.target.parentNode.insertBefore(selected, e.target.nextSibling);\n          }\n        }\n      }\n\n      function dragEnd(e) {\n        e.target.style.opacity = '1'\n\n        selected = null\n      }\n\n      function dragStart(e) {\n        e.dataTransfer.effectAllowed = 'move'\n        e.dataTransfer.setData('text/plain', null)\n        selected = e.target\n        selected.style.opacity = '0.4'\n      }\n\n      function touchStart(e) {\n        selected = e.target.closest('.task-wrapper');\n      }\n\n      function touchMove(e) {\n        e.preventDefault();\n        const touch = e.touches[0];\n        const target = document.elementFromPoint(touch.clientX, touch.clientY).closest('.task-wrapper');\n        if (target && target !== selected) {\n          e.target.style.opacity = '0.4'\n          if (isBefore(selected, target)) {\n            target.parentNode.insertBefore(selected, target);\n          } else {\n            target.parentNode.insertBefore(selected, target.nextSibling);\n          }\n        }\n      }\n\n      function touchEnd(e) {\n        e.target.style.opacity = '1'\n\n        selected = null;\n      }\n\n      function isBefore(el1, el2) {\n        let cur\n        if (el2.parentNode === el1.parentNode) {\n          for (cur = el1.previousSibling; cur; cur = cur.previousSibling) {\n            if (cur === el2) return true\n          }\n        }\n        return false;\n      }\n    })()\n    </script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</section><script>\n    (() => {\n      let selected = null\n\n      const editTaskButtons = document.querySelectorAll('.edit-task-button')\n      editTaskButtons.forEach(button => {\n        button.addEventListener('click', (e) => {\n          console.log(e.target.value)\n          document.querySelector(`#modal-${e.target.value}`).showModal()\n        })\n      })\n\n      const cancelButtons = document.querySelectorAll('.cancel')\n      cancelButtons.forEach(button => {\n        button.addEventListener('click', (e) => {\n          e.target.closest('.edit-task-modal').close()\n        })\n      })\n\n      const taskWrappers = document.querySelectorAll('.card')\n      taskWrappers.forEach(wrapper => {\n        wrapper.addEventListener('dragover', dragOver)\n        wrapper.addEventListener('dragstart', dragStart)\n        wrapper.addEventListener('dragend', dragEnd)\n        wrapper.addEventListener('touchstart', touchStart)\n        wrapper.addEventListener('touchmove', touchMove)\n        wrapper.addEventListener('touchend', touchEnd)\n      })\n      function dragOver(e) {\n        e.preventDefault();\n        if (e.target.classList.contains('card') && e.target !== selected) {\n          if (isBefore(selected, e.target)) {\n            e.target.parentNode.insertBefore(selected, e.target);\n          } else {\n            e.target.parentNode.insertBefore(selected, e.target.nextSibling);\n          }\n        }\n      }\n\n      function dragEnd(e) {\n        e.target.style.opacity = '1'\n\n        selected = null\n      }\n\n      function dragStart(e) {\n        e.dataTransfer.effectAllowed = 'move'\n        e.dataTransfer.setData('text/plain', null)\n        selected = e.target\n        selected.style.opacity = '0.4'\n      }\n\n      function touchStart(e) {\n        selected = e.target.closest('.card');\n      }\n\n      function touchMove(e) {\n        e.preventDefault();\n        const touch = e.touches[0];\n        const target = document.elementFromPoint(touch.clientX, touch.clientY).closest('.card');\n        if (target && target !== selected) {\n          e.target.style.opacity = '0.4'\n          if (isBefore(selected, target)) {\n            target.parentNode.insertBefore(selected, target);\n          } else {\n            target.parentNode.insertBefore(selected, target.nextSibling);\n          }\n        }\n      }\n\n      function touchEnd(e) {\n        e.target.style.opacity = '1'\n\n        selected = null;\n      }\n\n      function isBefore(el1, el2) {\n        let cur\n        if (el2.parentNode === el1.parentNode) {\n          for (cur = el1.previousSibling; cur; cur = cur.previousSibling) {\n            if (cur === el2) return true\n          }\n        }\n        return false;\n      }\n    })()\n    </script>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func EditTaskError(message string) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var17 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var17 == nil {
+			templ_7745c5c3_Var17 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"error-wrapper\"><h3>Failed to update task!</h3><p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var18 string
+		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(message)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/task_list/task_list.templ`, Line: 157, Col: 14}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func EditTaskSuccess() templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var19 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var19 == nil {
+			templ_7745c5c3_Var19 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n    (() => {\n      setTimeout(() => {\n        document.querySelector('.edit-task-modal').close()\n      }, 3000)\n    })()\n  </script><div class=\"success-wrapper\"><h3>Task updated successfully</h3></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

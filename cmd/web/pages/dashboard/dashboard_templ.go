@@ -30,7 +30,7 @@ func Dashboard(isLoggedIn bool, streams []stream_types.Stream) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n    .wrapper {\n      padding: 2rem;\n\n      > h2 {\n        margin: 1rem 0;\n        color: var(--text1);\n        font-size: 1.25rem;\n        font-weight: bold;\n      }\n    }\n\n\n  </style>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><style>\n    .wrapper {\n      padding: 2rem;\n\n      > h2 {\n        margin: 1rem 0;\n        color: var(--text1);\n        font-size: 1.25rem;\n        font-weight: bold;\n      }\n    }\n\n\n  </style>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

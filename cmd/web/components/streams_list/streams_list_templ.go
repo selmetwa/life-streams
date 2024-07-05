@@ -35,7 +35,7 @@ func StreamsList(streams []stream_types.Stream) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"streams\"><style>\n      .modals-wrapper {\n        display: flex;\n        flex-direction: row;\n        gap: 1rem;\n      }\n      .empty {\n        margin: 0;\n        color: var(--text2);\n        font-size: 1rem;\n        font-weight: 500;\n      }\n\n      .streams {\n        border: 1px solid red;\n      }\n\n      .streams-list {\n        list-style-type: none;\n        padding: 0;\n        display: grid;\n        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));\n        gap: 10px;\n        flex-direction: column;\n      }\n      .stream-wrapper {\n        padding: 1rem;\n        background-color: var(--tile5);\n        border: 1px solid var(--tile6);\n        border-radius: 0.5rem;\n        cursor: move;\n        color: var(--text1);\n      }\n\n      .streams-list-title {\n        color: var(--text1);\n        font-size: 1.5rem;\n        font-weight: 500;\n        margin: 8px 0; \n      }\n  </style><div class=\"modals-wrapper\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><div class=\"buttons-wrapper\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -47,29 +47,29 @@ func StreamsList(streams []stream_types.Stream) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><h2 class=\"streams-list-title\">Streams</h2><section>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><h2>Streams</h2><section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if len(streams) == 0 {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"empty\">No streams found</p>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h2 class=\"empty\">No streams found</h2>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"streams-list\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"grid\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, stream := range streams {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"stream-wrapper\" draggable=\"true\"><h3>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"card\" draggable=\"true\"><h3>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(stream.Title)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/streams_list/streams_list.templ`, Line: 73, Col: 25}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/streams_list/streams_list.templ`, Line: 32, Col: 25}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 				if templ_7745c5c3_Err != nil {
@@ -82,22 +82,9 @@ func StreamsList(streams []stream_types.Stream) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(stream.Description)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/streams_list/streams_list.templ`, Line: 74, Col: 30}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/streams_list/streams_list.templ`, Line: 33, Col: 30}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p>id: ")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var4 string
-				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", stream.ID))
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/streams_list/streams_list.templ`, Line: 75, Col: 44}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -105,12 +92,12 @@ func StreamsList(streams []stream_types.Stream) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var5 string
-				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", stream.TasksCount))
+				var templ_7745c5c3_Var4 string
+				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", stream.TasksCount))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/streams_list/streams_list.templ`, Line: 76, Col: 55}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/streams_list/streams_list.templ`, Line: 34, Col: 55}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -118,12 +105,12 @@ func StreamsList(streams []stream_types.Stream) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var6 templ.SafeURL = templ.URL("/stream/" + strconv.Itoa(stream.ID))
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var6)))
+				var templ_7745c5c3_Var5 templ.SafeURL = templ.URL("/stream/" + strconv.Itoa(stream.ID))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var5)))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Details</a></li>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><button>Details</button></a></li>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -133,7 +120,7 @@ func StreamsList(streams []stream_types.Stream) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</section><script>\n    (() => {\n      let selected = null\n\n      const streamWrappers = document.querySelectorAll('.stream-wrapper')\n      streamWrappers.forEach(wrapper => {\n        wrapper.addEventListener('dragover', dragOver)\n        wrapper.addEventListener('dragstart', dragStart)\n        wrapper.addEventListener('dragend', dragEnd)\n        wrapper.addEventListener('touchstart', touchStart)\n        wrapper.addEventListener('touchmove', touchMove)\n        wrapper.addEventListener('touchend', touchEnd)\n      })\n      function dragOver(e) {\n        e.preventDefault();\n        if (e.target.classList.contains('stream-wrapper') && e.target !== selected) {\n          if (isBefore(selected, e.target)) {\n            e.target.parentNode.insertBefore(selected, e.target);\n          } else {\n            e.target.parentNode.insertBefore(selected, e.target.nextSibling);\n          }\n        }\n      }\n\n      function dragEnd(e) {\n        e.target.style.opacity = '1'\n\n        selected = null\n      }\n\n      function dragStart(e) {\n        console.log({ e })\n        e.dataTransfer.effectAllowed = 'move'\n        e.dataTransfer.setData('text/plain', null)\n        selected = e.target\n        selected.style.opacity = '0.4'\n      }\n\n      function touchStart(e) {\n        selected = e.target.closest('.stream-wrapper');\n      }\n\n      function touchMove(e) {\n        e.preventDefault();\n        const touch = e.touches[0];\n        const target = document.elementFromPoint(touch.clientX, touch.clientY).closest('.stream-wrapper');\n        if (target && target !== selected) {\n          e.target.style.opacity = '0.4'\n          if (isBefore(selected, target)) {\n            target.parentNode.insertBefore(selected, target);\n          } else {\n            target.parentNode.insertBefore(selected, target.nextSibling);\n          }\n        }\n      }\n\n      function touchEnd(e) {\n        e.target.style.opacity = '1'\n\n        selected = null;\n      }\n\n      function isBefore(el1, el2) {\n        let cur\n        if (el2.parentNode === el1.parentNode) {\n          for (cur = el1.previousSibling; cur; cur = cur.previousSibling) {\n            if (cur === el2) return true\n          }\n        }\n        return false;\n      }\n    })()\n    </script></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</section><script>\n    (() => {\n      let selected = null\n\n      const streamWrappers = document.querySelectorAll('.card')\n      streamWrappers.forEach(wrapper => {\n        wrapper.addEventListener('dragover', dragOver)\n        wrapper.addEventListener('dragstart', dragStart)\n        wrapper.addEventListener('dragend', dragEnd)\n        wrapper.addEventListener('touchstart', touchStart)\n        wrapper.addEventListener('touchmove', touchMove)\n        wrapper.addEventListener('touchend', touchEnd)\n      })\n      function dragOver(e) {\n        e.preventDefault();\n        if (e.target.classList.contains('card') && e.target !== selected) {\n          if (isBefore(selected, e.target)) {\n            e.target.parentNode.insertBefore(selected, e.target);\n          } else {\n            e.target.parentNode.insertBefore(selected, e.target.nextSibling);\n          }\n        }\n      }\n\n      function dragEnd(e) {\n        e.target.style.opacity = '1'\n\n        selected = null\n      }\n\n      function dragStart(e) {\n        console.log({ e })\n        e.dataTransfer.effectAllowed = 'move'\n        e.dataTransfer.setData('text/plain', null)\n        selected = e.target\n        selected.style.opacity = '0.4'\n      }\n\n      function touchStart(e) {\n        selected = e.target.closest('.card');\n      }\n\n      function touchMove(e) {\n        e.preventDefault();\n        const touch = e.touches[0];\n        const target = document.elementFromPoint(touch.clientX, touch.clientY).closest('.card');\n        if (target && target !== selected) {\n          e.target.style.opacity = '0.4'\n          if (isBefore(selected, target)) {\n            target.parentNode.insertBefore(selected, target);\n          } else {\n            target.parentNode.insertBefore(selected, target.nextSibling);\n          }\n        }\n      }\n\n      function touchEnd(e) {\n        e.target.style.opacity = '1'\n\n        selected = null;\n      }\n\n      function isBefore(el1, el2) {\n        let cur\n        if (el2.parentNode === el1.parentNode) {\n          for (cur = el1.previousSibling; cur; cur = cur.previousSibling) {\n            if (cur === el2) return true\n          }\n        }\n        return false;\n      }\n    })()\n    </script></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

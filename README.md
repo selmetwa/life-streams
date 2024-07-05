@@ -8,15 +8,10 @@ Beep boop boop
 - templ [x]
 - htmx [x]
 - Sql [x]
-- View transitions
-- Web components (maybe lit)
-- Modern css
-- Import maps
+- View transitions [x]
 - Auth [x]
 - Html drag and drop [x]
 - Html popover [x]
-- No build js
-- Jsdoc 
 - Semantic html [x]
 - dark mode [x]
 
