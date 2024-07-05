@@ -86,30 +86,13 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 func EditTask(w http.ResponseWriter, r *http.Request) {
 	task_id_str := r.PathValue("id")
 	taskID, _ := strconv.Atoi(task_id_str)
-	sessionToken, _ := r.Cookie("session_token")
 
 	taskName := r.FormValue("title")
 	description := r.FormValue("description")
 	streamIdStr := r.FormValue("stream")
 	streamId, _ := strconv.Atoi(streamIdStr)
 
-	userId, err := session_queries.GetUserIDFromSession(sessionToken.Value)
-
-	if err != nil {
-		component := task_list.EditTaskError(err.Error())
-		component.Render(r.Context(), w)
-		return
-	}
-
-	task_id, _ := task_queries.GetTaskByTitle(userId, taskName)
-
-	if task_id != nil {
-		component := task_list.EditTaskError("Task with this name already exists")
-		component.Render(r.Context(), w)
-		return
-	}
-
-	err = task_mutations.EditTask(taskID, taskName, description, streamId)
+	err := task_mutations.EditTask(taskID, taskName, description, streamId)
 
 	if err != nil {
 		component := task_list.EditTaskError("Something went wrong editing this task")

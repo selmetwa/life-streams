@@ -27,40 +27,35 @@ type StreamQueries interface {
 func GetStreamsByUserID(userId int) ([]stream_types.Stream, error) {
 	database := database.New()
 
-	query := `SELECT id, title, description, priority, position FROM streams WHERE user_id = ? ORDER BY updated_at DESC`
-	rows, err := database.Query(query, userId)
-
+	query := `
+		SELECT s.id, s.title, s.description, s.priority, s.position, COUNT(t.id) AS task_count
+		FROM streams s
+		LEFT JOIN tasks t ON s.id = t.stream_id AND t.user_id = ?
+		WHERE s.user_id = ?
+		GROUP BY s.id, s.title, s.description, s.priority, s.position
+		ORDER BY s.updated_at DESC
+	`
+	rows, err := database.Query(query, userId, userId)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var streams []stream_types.Stream
 
 	for rows.Next() {
 		var stream stream_types.Stream
-
-		var count int
-
-		err := rows.Scan(&stream.ID, &stream.Title, &stream.Description, &stream.Priority, &stream.Position)
-
+		err := rows.Scan(&stream.ID, &stream.Title, &stream.Description, &stream.Priority, &stream.Position, &stream.TasksCount)
 		if err != nil {
 			fmt.Println("error scanning stream", err)
 			return nil, err
 		}
-
-		tasksCountQuery := `SELECT COUNT(*) FROM tasks WHERE stream_id = ? AND user_id = ?`
-		err = database.QueryRow(tasksCountQuery, stream.ID, userId).Scan(&count)
-
-		if err != nil {
-			fmt.Println("something went wrong getting the count: ", err)
-		}
-
-		fmt.Println("count: ", count)
-		stream.TasksCount = count
 		streams = append(streams, stream)
 	}
 
-	defer rows.Close()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 
 	return streams, nil
 }
