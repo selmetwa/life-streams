@@ -50,7 +50,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("Task created successfully: ", task)
-	w.Header().Set("HX-Trigger", "refetchStreamList,refetchTasks")
+	w.Header().Set("HX-Trigger", "refetchStreamList, refetchTasks")
 
 	component := create_task_modal_view.CreateTaskSuccess()
 	component.Render(r.Context(), w)

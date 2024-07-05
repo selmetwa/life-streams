@@ -60,8 +60,17 @@ func CreateStream(user_id int, title, description string, priority int) (stream_
 
 func DeleteStream(userId int, streamID int) error {
 	database := database.New()
-	delete_stream_mutation := `DELETE FROM streams WHERE user_id = ? AND id = ?`
 
+	delete_tasks_from_stream := `DELETE FROM tasks WHERE user_id = ? AND stream_id = ?`
+
+	_, err := database.Exec(delete_tasks_from_stream, userId, streamID)
+
+	if err != nil {
+		fmt.Println("something went wrong deleting tasks within stream: ", err)
+		return err
+	}
+
+	delete_stream_mutation := `DELETE FROM streams WHERE user_id = ? AND id = ?`
 	row, err := database.Exec(delete_stream_mutation, userId, streamID)
 
 	if err != nil {

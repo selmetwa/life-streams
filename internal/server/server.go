@@ -47,6 +47,7 @@ func gzipHandler(next http.Handler) http.Handler {
 
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	fmt.Println("Starting server on port: ", port)
 
 	NewServer := &Server{
 		port: port,

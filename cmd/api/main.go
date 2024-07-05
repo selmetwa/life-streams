@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-
+	fmt.Println("Starting server")
 	server := server.NewServer()
 
 	err := server.ListenAndServe()

@@ -34,8 +34,6 @@ func GetStreamsByUserID(userId int) ([]stream_types.Stream, error) {
 		return nil, err
 	}
 
-	defer rows.Close()
-
 	var streams []stream_types.Stream
 
 	for rows.Next() {
@@ -45,19 +43,24 @@ func GetStreamsByUserID(userId int) ([]stream_types.Stream, error) {
 
 		err := rows.Scan(&stream.ID, &stream.Title, &stream.Description, &stream.Priority, &stream.Position)
 
-		fmt.Println("stream", stream)
-		fmt.Println("streamID", stream.ID)
 		if err != nil {
 			fmt.Println("error scanning stream", err)
 			return nil, err
 		}
 
 		tasksCountQuery := `SELECT COUNT(*) FROM tasks WHERE stream_id = ? AND user_id = ?`
-		database.QueryRow(tasksCountQuery, stream.ID, userId).Scan(&count)
+		err = database.QueryRow(tasksCountQuery, stream.ID, userId).Scan(&count)
 
+		if err != nil {
+			fmt.Println("something went wrong getting the count: ", err)
+		}
+
+		fmt.Println("count: ", count)
 		stream.TasksCount = count
 		streams = append(streams, stream)
 	}
+
+	defer rows.Close()
 
 	return streams, nil
 }

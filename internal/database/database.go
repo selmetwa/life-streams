@@ -34,7 +34,8 @@ var (
 )
 
 func CreateTables(db *sql.DB) {
-	createUsersStatement, err := db.Prepare(`
+	fmt.Println("creating tables")
+	createUsersStatement, _ := db.Prepare(`
 		CREATE TABLE IF NOT EXISTS users (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			username TEXT UNIQUE NOT NULL,
@@ -44,13 +45,13 @@ func CreateTables(db *sql.DB) {
 			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 	)`)
 
+	_, err := createUsersStatement.Exec()
+
 	if err != nil {
 		fmt.Println("create users table error: ", err)
 	}
 
-	createUsersStatement.Exec()
-
-	createSessionsStatement, err := db.Prepare(`
+	createSessionsStatement, _ := db.Prepare(`
 		CREATE TABLE IF NOT EXISTS sessions (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
@@ -60,13 +61,11 @@ func CreateTables(db *sql.DB) {
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 	)`)
 
+	_, err = createSessionsStatement.Exec()
 	if err != nil {
 		fmt.Println("create sessions table error: ", err)
 	}
-
-	createSessionsStatement.Exec()
-
-	createStreamsStatement, err := db.Prepare(`
+	createStreamsStatement, _ := db.Prepare(`
 		CREATE TABLE IF NOT EXISTS streams (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
@@ -80,13 +79,12 @@ func CreateTables(db *sql.DB) {
 		)
 	`)
 
+	_, err = createStreamsStatement.Exec()
 	if err != nil {
 		fmt.Println("create streams table error: ", err)
 	}
 
-	createStreamsStatement.Exec()
-
-	createTasksStatement, err := db.Prepare(`
+	createTasksStatement, _ := db.Prepare(`
 		CREATE TABLE IF NOT EXISTS tasks (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
@@ -102,11 +100,11 @@ func CreateTables(db *sql.DB) {
 		)
 	`)
 
+	_, err = createTasksStatement.Exec()
+
 	if err != nil {
 		fmt.Println("create streams tasks error: ", err)
 	}
-
-	createTasksStatement.Exec()
 }
 
 func New() *sql.DB {
